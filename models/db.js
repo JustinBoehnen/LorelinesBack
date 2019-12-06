@@ -1,13 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-mongoose.connect(process.env.MONGODB_URI, (err) => {
-    if(!err)
-    {
-        console.log('connected to database');
-    }
-    else{
-        console.log('error connectiong to mongo: ' + JSON.stringify(err, undefined, 2));
-    }
-});
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
 
-require('./UserAccounts.model');
+mongoose.connection.on('connected', () => console.log('DB connected'))
+mongoose.connection.on('error', err => console.log(err))
