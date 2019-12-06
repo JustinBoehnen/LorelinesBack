@@ -1,4 +1,4 @@
-require('dotenv').config()
+if (process.env.NODE_ENV === 'development') require('dotenv').config()
 require('./mongooseClient')
 require('./config/passportConfig')
 
