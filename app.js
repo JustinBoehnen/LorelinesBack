@@ -1,5 +1,5 @@
-require('./config/config')
-require('./models/db')
+require('dotenv').config()
+require('./mongooseClient')
 require('./config/passportConfig')
 
 const express = require('express')
@@ -27,5 +27,5 @@ app.use((err, req, res, next) => {
   }
 })
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 8080
 app.listen(PORT, () => console.log(`Server started on port: ${PORT}`))

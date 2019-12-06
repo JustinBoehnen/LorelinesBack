@@ -42,7 +42,7 @@ router.post('/token', (req, res) => {
   User.findOne(
     { email: req.body.email, password: req.body.password },
     (err, user) => {
-      if (!err) {
+      if (!err && user !== null) {
         if (user.password === req.body.password) {
           res.status(status.OK).send(User.generateJwt(user))
         }
@@ -78,9 +78,5 @@ router.put('/token', (req, res) => {
     }
   })
 })
-
-//router.post('/register', ctrlUser.register);
-//router.post('/authenticate', ctrlUser.authenticate);
-//router.get('/userProfile', jwtHelper.verifyJwtToken, ctrlUser.userProfile);
 
 module.exports = router

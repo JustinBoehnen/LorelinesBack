@@ -20,5 +20,8 @@
     "passport-local": "^1.0.0"
   },
   "keywords": [],
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "dotenv": "^8.2.0"
+  }
 }
