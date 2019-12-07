@@ -15,7 +15,7 @@ const bcrypt = require('bcrypt')
  * res: token
  */
 router.post('/', (req, res) => {
-  bcrypt.hash(req.body.password, process.env.SALT_ROUNDS, (err, hash) => {
+  bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (!err) {
       var user = new User({
         id: req.body.id,
