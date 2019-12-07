@@ -48,8 +48,8 @@ router.post('/', (req, res) => {
 router.post('/token', (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!err && user !== null) {
-      bcrypt.compare(req.body.password, user.password, (err, res) => {
-        if (res) res.status(status.OK).send(User.generateJwt(user))
+      bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if (result) res.status(status.OK).send(User.generateJwt(user))
         else res.sendStatus(status.UNAUTHORIZED)
       })
     } else {
