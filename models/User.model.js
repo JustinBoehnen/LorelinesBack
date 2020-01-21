@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 //const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
 //Defaults for user accounts
 var userSchema = new mongoose.Schema({
@@ -21,10 +21,10 @@ var userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: "password can't be empty",
-    minlength: [8, 'password must be at least 8 characters long']
+    minlength: [8, "password must be at least 8 characters long"]
   },
   saltSecret: String
-})
+});
 
 // // Custom validation for email
 // userSchema.path('email').validate(val => {
@@ -55,7 +55,7 @@ userSchema.statics.generateJwt = user => {
     {
       expiresIn: process.env.JWT_EXP
     }
-  )
-}
+  );
+};
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model("User", userSchema);
