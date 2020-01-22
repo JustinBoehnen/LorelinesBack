@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 //const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
+const timeline = require("./loreline.model");
 
 //Defaults for user accounts
 var userSchema = new mongoose.Schema({
@@ -22,6 +23,12 @@ var userSchema = new mongoose.Schema({
     type: String,
     required: "password can't be empty",
     minlength: [8, "password must be at least 8 characters long"]
+  },
+  //Can't remember if we wanted to store the lorelines with each user account information or seperately, this seems like it'd work but we's end up with huge documents
+  //If not, then this section can be deleted with no harm, since the loreline schema has a required User ID type.
+  lorelines: {
+    //an array of lorelines, which should in turn call the array of timeline nodes leading the the hiearchy thats desired?? 
+      type: [loreline]
   },
   saltSecret: String
 });
