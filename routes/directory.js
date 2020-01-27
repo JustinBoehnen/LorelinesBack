@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const status = require("http-status-codes");
-//const Directory = require("../models/directory.model");
+const Directory = require("../models/Directory.model");
 
 /**
  * Purpose: Getter to return a users directory
  */
-if(mongoose.Types.ObjectId.isValid(lorelineId.id)) {
-router.findById({})
+if(mongoose.Types.ObjectId.isValid(lorelineId)) {
+router.findById({lorelineId})
 .then((data)=>{
     console.log(data);
 })
@@ -16,5 +16,5 @@ router.findById({})
     console.log(err);
 });
 } else {
-    console.log("Please provide correct loreline id");
+    console.log("Not a correct loreline id");
 }
