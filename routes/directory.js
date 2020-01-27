@@ -8,7 +8,7 @@ const Directory = require("../models/Directory.model");
  * Purpose: Getter to return a users directory
  */
 if(mongoose.Types.ObjectId.isValid(lorelineId)) {
-router.findById({lorelineId})
+router.find({})
 .then((data)=>{
     console.log(data);
 })
