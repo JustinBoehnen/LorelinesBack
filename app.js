@@ -10,6 +10,7 @@ const cors = require("cors");
 const passport = require("passport");
 
 const userRoutes = require("./routes/users");
+const personEntityRoutes = require("./routes/personEntity");
 var app = express();
 
 //middleware
@@ -17,6 +18,8 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(passport.initialize());
 app.use("/api/users", userRoutes);
+//insert actual path after root URL for personEntityRoutes
+app.use("/test/entities", personEntityRoutes);
 
 //error handeling
 app.use((err, req, res, next) => {
