@@ -48,4 +48,8 @@ var personEntity = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("entityinstances", personEntity);
+module.exports = mongoose.model(
+  "personEntity",
+  personEntity,
+  "entityinstances"
+);
