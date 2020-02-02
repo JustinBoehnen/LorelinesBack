@@ -3,7 +3,7 @@ const router = express.Router();
 const placeEntity = require("../models/placeEntity.model");
 /**
  * Purpose: Adds a new person entity instance
- * Full path: /api/personEntity/addPersonEntity
+ * Full path: /test/placeEntity
  * req: placeEntity fields
  * res: token
  */

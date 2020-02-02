@@ -1,5 +1,4 @@
-console.log("MODE:", process.env.NODE_ENV);
-//if (process.env.NODE_ENV === "development") require("dotenv").config();
+if (process.env.NODE_ENV === "development") require("dotenv").config();
 require("dotenv").config();
 require("./mongooseClient");
 require("./config/passportConfig");
@@ -19,7 +18,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(passport.initialize());
 app.use("/api/users", userRoutes);
-//insert actual path after root URL for personEntityRoutes
+//insert actual path after root URL for entity routes
 app.use("/test/personEntity", personEntityRoutes);
 app.use("/test/placeEntity", placeEntityRoutes);
 

@@ -5,7 +5,7 @@ const personEntity = require("../models/personEntity.model");
 const jwt = require("jsonwebtoken");
 /**
  * Purpose: Adds a new person entity instance
- * Full path: /api/personEntity/addPersonEntity
+ * Full path: /test/personEntity
  * req: personEntity fields
  * res: token
  */
