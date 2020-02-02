@@ -9,7 +9,7 @@ const placeEntity = require("../models/placeEntity.model");
  */
 router.route("/").get((req, res) => {
   placeEntity
-    .find()
+    .find({ type: "place" })
     .then(entityinstances => res.json(entityinstances))
     .catch(err => res.status(400).json("Error: " + err));
 });

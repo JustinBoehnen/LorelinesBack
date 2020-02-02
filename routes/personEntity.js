@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken");
  */
 router.route("/").get((req, res) => {
   personEntity
-    .find()
+    .find({ type: "person" })
     .then(entityinstances => res.json(entityinstances))
     .catch(err => res.status(400).json("Error: " + err));
 });
