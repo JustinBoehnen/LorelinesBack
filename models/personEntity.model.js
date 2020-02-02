@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 //Person static entity schema
 var personEntity = new mongoose.Schema({
   loreline: {
-    type: String
+    type: Number
   },
   type: {
     type: String,
@@ -19,11 +19,11 @@ var personEntity = new mongoose.Schema({
     default: "purple"
   },
   uuid: {
-    type: String,
+    type: Number,
     default: Math.random() * 1000000
   },
   age: {
-    type: String
+    type: Number
   },
   sex: {
     type: String
@@ -48,4 +48,4 @@ var personEntity = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model("personEntity", personEntity);
+module.exports = mongoose.model("entityinstances", personEntity);

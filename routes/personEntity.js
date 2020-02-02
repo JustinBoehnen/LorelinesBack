@@ -12,13 +12,14 @@ const jwt = require("jsonwebtoken");
 router.route("/").get((req, res) => {
   personEntity
     .find()
-    .then(personEntities => res.json(personEntities))
+    .then(entityinstances => res.json(entityinstances))
     .catch(err => res.status(400).json("Error: " + err));
 });
 
 router.route("/addPersonEntity").post((req, res) => {
   const loreline = req.body.loreline;
   const type = req.body.type;
+  const name = req.body.name;
   const color = req.body.color;
   const uuid = req.body.uuid;
   const age = req.body.age;
@@ -33,6 +34,7 @@ router.route("/addPersonEntity").post((req, res) => {
   const newPersonEntity = new personEntity({
     loreline,
     type,
+    name,
     color,
     uuid,
     age,
