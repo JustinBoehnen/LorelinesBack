@@ -4,11 +4,13 @@ const jwt = require("jsonwebtoken");
 //Place static entity schema
 var placeEntity = new mongoose.Schema({
   loreline: {
-    type: Number
+    type: Number,
+    required: "place needs a loreline"
   },
   type: {
     type: String,
-    default: "place"
+    default: "place",
+    required: "person needs a loreline"
   },
   name: {
     type: String,

@@ -11,6 +11,7 @@ const passport = require("passport");
 const userRoutes = require("./routes/users");
 const personEntityRoutes = require("./routes/personEntity");
 const placeEntityRoutes = require("./routes/placeEntity");
+const customEntityRoutes = require("./routes/customEntity");
 var app = express();
 
 //middleware
@@ -21,6 +22,7 @@ app.use("/api/users", userRoutes);
 //insert actual path after root URL for entity routes
 app.use("/test/personEntity", personEntityRoutes);
 app.use("/test/placeEntity", placeEntityRoutes);
+app.use("/test/customEntity", customEntityRoutes);
 
 //error handeling
 app.use((err, req, res, next) => {
