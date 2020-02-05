@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
+var Schema = mongoose.Schema,
+ObjectId = Schema.ObjectId;
 
 var directorySchema = new mongoose.Schema({
   lorelineId: {
-    type: String,
+    type: ObjectId,
     unique: true
   },
   ceObject: {
@@ -12,3 +14,4 @@ var directorySchema = new mongoose.Schema({
     type: Object
   }
 });
+module.exports = mongoose.model("Directory", directorySchema);

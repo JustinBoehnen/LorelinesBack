@@ -59,6 +59,3 @@ typings/
 
 # next.js build output
 .next
-
-# directory for a local MongoDB database
-localtestdb/
