@@ -3,10 +3,7 @@ const router = express.Router();
 const status = require("http-status-codes");
 const Directory = require("../models/Directory.model");
 
-/**
- * Purpose: Getter to return a users directory
- */
-
+//Gets all directories in database
 router.get('/', async (req, res) => {
   const directory = await Directory.find({});
   try {
@@ -15,6 +12,7 @@ router.get('/', async (req, res) => {
     res.status(500).send(err);
   }
 });
+//Gets one directory by id in database
 router.get('/:id', async (req, res) => {
   try {
     const directory = await Directory.findById(req.params.id);
@@ -24,6 +22,17 @@ router.get('/:id', async (req, res) => {
     res.status(500).send(err);
   }
 });
+//Finds one directory and updates by id
+router.patch('/update/:id', async (req, res) => {
+  try {
+    await Directory.findByIdAndUpdate(req.params.id, req.body);
+    await Directory.save();
+    res.send(directory);
+  } catch(err) {
+    res.status(500).send(err);
+  }
+});
+//Adds a new directory
 router.post('/', async (req, res) => {
   const directory = new Directory(req.body);
   try {
@@ -32,5 +41,15 @@ router.post('/', async (req, res) => {
   } catch(err) {
     res.status(500).send(err);
   }
-})
-module.exports = router
+});
+//Deletes a directory
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    const directory = await Directory.findByIdAndDelete(req.params.id);
+    if(!directory) res.status(404).send("No directory found");
+    res.status(200).send();
+  } catch(err) {
+    res.status(500).send(err);
+  }
+});
+module.exports = router;
