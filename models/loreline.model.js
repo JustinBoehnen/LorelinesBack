@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const node = require("./timeLineNode.model");
+const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
+const node = require('./timeLineNode.model')
 /*********************************************
  * Purpose: Provide a "template" for how each loreline is going to be stored.
  * Required: The user Id of the author of the loreline
@@ -8,7 +8,7 @@ const node = require("./timeLineNode.model");
 var loreLine = new mongoose.schema({
   UserId: {
     type: Number,
-    required: "Has to belong to an account"
+    required: 'Has to belong to an account'
   },
   nodes: {
     //an array of the timeLineNode schemas, which (should) result in an array of all the nodes in a single timeline.
@@ -17,6 +17,6 @@ var loreLine = new mongoose.schema({
   entities: {
     type: []
   }
-});
+})
 
-module.exports = mongoose.model("loreLine", loreLine);
+module.exports = mongoose.model('loreLine', loreLine)

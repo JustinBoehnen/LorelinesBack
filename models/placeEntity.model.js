@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+/*const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 //Place static entity schema
@@ -33,3 +33,4 @@ var placeEntity = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("placeEntity", placeEntity, "entityinstances");
+*/
