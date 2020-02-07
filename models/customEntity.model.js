@@ -1,20 +1,12 @@
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
+const mongoose = require('mongoose')
+const fieldType = require('./fieldType.model.js')
 
 //custom entity schema
-var customEntity = new mongoose.Schema({
-  loreline: {
-    type: Number,
-    required: "custom entity needs a loreline"
-  },
-  name: {
-    type: String,
-    required: "custom entity needs a name"
-  },
-  JSONdescription: {
-    type: String,
-    required: "custom entity needs a description"
-  }
-});
+var customEntitySchema = new mongoose.Schema({
+  name: String,
+  color: Number,
+  content: [fieldType],
+  instances: []
+})
 
-module.exports = mongoose.model("customEntity", customEntity, "customEntities");
+module.exports = mongoose.model('customEntity', customEntitySchema)
