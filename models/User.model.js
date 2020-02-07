@@ -7,7 +7,7 @@ var userSchema = new mongoose.Schema({
   email: String,
   password: String,
   saltSecret: String,
-  lorelineIds: [mongoose.shema.Types.ObjectId]
+  lorelineIds: [mongoose.schema.Types.ObjectId]
 })
 
 userSchema.statics.generateJwt = user => {

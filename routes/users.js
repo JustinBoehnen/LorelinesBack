@@ -17,10 +17,10 @@ router.post('/', (req, res) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (!err) {
       var user = new User({
-        id: req.body.id,
         name: req.body.name,
         email: req.body.email,
-        password: hash
+        password: hash,
+        lorelines: null
       })
 
       user.save((err, doc) => {
@@ -36,6 +36,19 @@ router.post('/', (req, res) => {
       console.log(err)
     }
   })
+})
+
+/**
+ * Purpose: Adds a loreline to a user
+ * Full path: /api/users/:userid/lorelines
+ * req: Loreline id from loreline insert into db
+ * res: status
+ */
+router.post('/:userid/lorelines', (req, res) => {
+  // find user
+  // add loreline id to them user.addLoreline
+  var userid = request.params.userid
+  res.send('POST request for adding loreline to user with id: ' + userid)
 })
 
 /**

@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 
-var lorelineShema = new mongoose.Schema({
+var lorelineSchema = new mongoose.Schema({
+  name: String,
   timelineData: [],
   customEntities: []
 })
 
-module.exports = mongoose.model('loreline', lorelineShema)
+module.exports = mongoose.model('loreline', lorelineSchema)
