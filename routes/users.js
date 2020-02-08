@@ -1,9 +1,11 @@
-const express = require('express')
-const router = express.Router()
-const status = require('http-status-codes')
-const User = require('../models/user.model')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+/** @format */
+
+const express = require('express');
+const router = express.Router();
+const status = require('http-status-codes');
+const User = require('../models/user.model');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 // These routes are in: api/user
 
@@ -21,22 +23,22 @@ router.post('/', (req, res) => {
         email: req.body.email,
         password: hash,
         lorelines: null
-      })
+      });
 
       user.save((err, doc) => {
-        if (!err) res.send(User.generateJwt(user))
+        if (!err) res.send(User.generateJwt(user));
         else {
           res
             .status(status.CONFLICT)
-            .send(['ERR: user with that email already exists'])
-          console.log(err)
+            .send(['ERR: user with that email already exists']);
+          console.log(err);
         }
-      })
+      });
     } else {
-      console.log(err)
+      console.log(err);
     }
-  })
-})
+  });
+});
 
 /**
  * Purpose: Adds a loreline to a user
@@ -45,11 +47,25 @@ router.post('/', (req, res) => {
  * res: status
  */
 router.post('/:userid/lorelines', (req, res) => {
-  // find user
-  // add loreline id to them user.addLoreline
-  var userid = request.params.userid
-  res.send('POST request for adding loreline to user with id: ' + userid)
-})
+  User.findByIdAndUpdate(req.params.userid, (err, user) => {
+    if (!err) {
+      $push: {
+        lorelineIds: req.body.lorelineId;
+      }
+      user.save((err, doc) => {
+        if (!err) res.sendStatus(status.CREATED);
+        else {
+          res.sendStatus(status.CONFLICT);
+          console.log(err);
+        }
+        res.status(status.CREATED).send(loreline.id);
+      });
+    } else {
+      res.sendStatus(status.NOT_FOUND);
+      console.log(err);
+    }
+  });
+});
 
 /**
  * Purpose: Logs a user into the site
@@ -61,14 +77,14 @@ router.post('/token', (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!err && user !== null) {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
-        if (result) res.status(status.OK).send(User.generateJwt(user))
-        else res.sendStatus(status.UNAUTHORIZED)
-      })
+        if (result) res.status(status.OK).send(User.generateJwt(user));
+        else res.sendStatus(status.UNAUTHORIZED);
+      });
     } else {
-      res.sendStatus(status.NOT_FOUND)
+      res.sendStatus(status.NOT_FOUND);
     }
-  })
-})
+  });
+});
 
 /**
  * Purpose: Updates the users token with a
@@ -81,19 +97,19 @@ router.post('/token', (req, res) => {
 router.put('/token', (req, res) => {
   jwt.verify(req.body.token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      res.sendStatus(status.UNAUTHORIZED)
+      res.sendStatus(status.UNAUTHORIZED);
     } else if (Date.now() < decoded.exp * 1000) {
       User.findOne({ id: decoded.id }, (err, user) => {
         if (!err) {
-          res.status(status.CREATED).send(User.generateJwt(user))
+          res.status(status.CREATED).send(User.generateJwt(user));
         } else {
-          res.sendStatus(status.NOT_FOUND)
+          res.sendStatus(status.NOT_FOUND);
         }
-      })
+      });
     } else {
-      res.sendStatus(status.UNAUTHORIZED)
+      res.sendStatus(status.UNAUTHORIZED);
     }
-  })
-})
+  });
+});
 
-module.exports = router
+module.exports = router;
