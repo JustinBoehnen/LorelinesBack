@@ -1,9 +1,11 @@
-const mongoose = require('mongoose')
+/** @format */
+
+const mongoose = require('mongoose');
 
 var lorelineSchema = new mongoose.Schema({
   name: String,
   timelineData: [],
-  customEntities: []
-})
+  customEntities: [] //customEntity
+});
 
-module.exports = mongoose.model('loreline', lorelineSchema)
+module.exports = mongoose.model('loreline', lorelineSchema);

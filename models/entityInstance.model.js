@@ -1,11 +1,12 @@
-const mongoose = require('mongoose')
-const fieldContent = require('./fieldContent.model.js')
+/** @format */
+
+const mongoose = require('mongoose');
 
 //custom entity schema
 var entityInstanceSchema = new mongoose.Schema({
   name: String,
   color: Number,
-  content: [fieldContent]
-})
+  content: [] //fieldContent
+});
 
-module.exports = mongoose.model('entityInstance', entityInstanceSchema)
+module.exports = mongoose.model('entityInstance', entityInstanceSchema);

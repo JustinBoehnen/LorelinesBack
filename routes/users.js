@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const status = require('http-status-codes');
 const User = require('../models/user.model');
+const Loreline = require('../models/loreline.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -12,7 +13,9 @@ const bcrypt = require('bcrypt');
 /**
  * Purpose: Adds a new user to the DB
  * Full path: /api/users/
- * req: email and plaintext password
+ * req: name: String
+ *      email: String (unique)
+ *      password: String
  * res: token
  */
 router.post('/', (req, res) => {
@@ -21,8 +24,7 @@ router.post('/', (req, res) => {
       var user = new User({
         name: req.body.name,
         email: req.body.email,
-        password: hash,
-        lorelines: null
+        password: hash
       });
 
       user.save((err, doc) => {
@@ -30,7 +32,7 @@ router.post('/', (req, res) => {
         else {
           res
             .status(status.CONFLICT)
-            .send(['ERR: user with that email already exists']);
+            .send(['A user with that email already exists!']);
           console.log(err);
         }
       });
@@ -43,35 +45,33 @@ router.post('/', (req, res) => {
 /**
  * Purpose: Adds a loreline to a user
  * Full path: /api/users/:userid/lorelines
- * req: Loreline id from loreline insert into db
- * res: status
+ * req: lorelineId: ObjectId
+ *      name: String
+ * res: Error message for use on frontend
  */
 router.post('/:userid/lorelines', (req, res) => {
-  User.findByIdAndUpdate(req.params.userid, (err, user) => {
-    if (!err) {
+  //if (Loreline.findById(req.body.lorelineId) != null) {
+  User.findByIdAndUpdate(
+    req.params.userid,
+    {
       $push: {
-        lorelineIds: req.body.lorelineId;
+        lorelines: { lorelineId: req.body.lorelineId, name: req.body.name }
       }
-      user.save((err, doc) => {
-        if (!err) res.sendStatus(status.CREATED);
-        else {
-          res.sendStatus(status.CONFLICT);
-          console.log(err);
-        }
-        res.status(status.CREATED).send(loreline.id);
-      });
-    } else {
-      res.sendStatus(status.NOT_FOUND);
-      console.log(err);
+    },
+    (err, result) => {
+      if (!err) res.sendStatus(status.CREATED);
+      else res.sendStatus(status.NOT_FOUND);
     }
-  });
+  );
+  //} else res.sendStatus(status.NOT_FOUND);
 });
 
 /**
  * Purpose: Logs a user into the site
  * Full path: /api/users/token
- * req: email and plaintext password
- * res: token
+ * req: email: String
+ *      password: String (plaintext)
+ * res:
  */
 router.post('/token', (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {

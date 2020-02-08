@@ -3,13 +3,18 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
+mongoose.set('useCreateIndex', true);
+
 //Defaults for user accounts
 var userSchema = new mongoose.Schema({
   name: String,
-  email: String,
+  email: { type: String, unique: true },
   password: String,
   saltSecret: String,
-  lorelineIds: [mongoose.Types.ObjectId]
+  lorelines: {
+    type: [{ lorelineId: mongoose.Types.ObjectId, name: String }],
+    _id: false
+  }
 });
 
 userSchema.statics.generateJwt = user => {
