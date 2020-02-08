@@ -1,5 +1,7 @@
-const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
+/** @format */
+
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 //Defaults for user accounts
 var userSchema = new mongoose.Schema({
@@ -7,8 +9,8 @@ var userSchema = new mongoose.Schema({
   email: String,
   password: String,
   saltSecret: String,
-  lorelineIds: [mongoose.schema.Types.ObjectId]
-})
+  lorelineIds: [mongoose.Types.ObjectId]
+});
 
 userSchema.statics.generateJwt = user => {
   return jwt.sign(
@@ -17,7 +19,7 @@ userSchema.statics.generateJwt = user => {
     {
       expiresIn: process.env.JWT_EXP
     }
-  )
-}
+  );
+};
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema);
