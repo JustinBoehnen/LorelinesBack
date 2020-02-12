@@ -3,10 +3,11 @@
 const express = require('express');
 const router = express.Router();
 const status = require('http-status-codes');
-const User = require('../models/user.model');
-const Loreline = require('../models/loreline.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+
+const User = require('../models/user.model');
+const Loreline = require('../models/loreline.model');
 
 // <<<<   api/users   >>>>
 
