@@ -2,10 +2,10 @@
 
 const mongoose = require('mongoose');
 
-var lorelineSchema = new mongoose.Schema({
+var LorelineSchema = new mongoose.Schema({
   name: String,
   timelineData: [],
-  customEntities: [] //customEntity
+  customEntities: [{ type: mongoose.Types.ObjectId, ref: 'CustomEntity' }] //customEntity
 });
 
-module.exports = mongoose.model('loreline', lorelineSchema);
+module.exports = mongoose.model('Loreline', LorelineSchema);

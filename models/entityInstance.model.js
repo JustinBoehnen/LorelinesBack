@@ -2,11 +2,16 @@
 
 const mongoose = require('mongoose');
 
-//custom entity schema
-var entityInstanceSchema = new mongoose.Schema({
+var FieldContent = new mongoose.Schema({
+  type: Number,
   name: String,
-  color: Number,
-  content: [] //fieldContent
+  content: [],
+  _id: false
 });
 
-module.exports = mongoose.model('entityInstance', entityInstanceSchema);
+var EntityInstanceSchema = new mongoose.Schema({
+  name: String,
+  content: [FieldContent]
+});
+
+module.exports = mongoose.model('EntityInstance', EntityInstanceSchema);

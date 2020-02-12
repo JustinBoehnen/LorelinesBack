@@ -1,14 +1,18 @@
 /** @format */
 
 const mongoose = require('mongoose');
-const fieldType = require('./fieldType.model');
-const entityInstance = require('./entityInstance.model');
 
-var customEntitySchema = new mongoose.Schema({
+var FieldType = new mongoose.Schema({
+  type: Number,
   name: String,
-  color: String,
-  content: [], //fieldType
-  instances: [] //entityInstance
+  _id: false
 });
 
-module.exports = mongoose.model('customEntity', customEntitySchema);
+var CustomEntitySchema = new mongoose.Schema({
+  name: String,
+  color: String,
+  content: [FieldType],
+  instances: [{ type: mongoose.Types.ObjectId, ref: 'EntityInstance' }] //entityInstance
+});
+
+module.exports = mongoose.model('CustomEntity', CustomEntitySchema);
