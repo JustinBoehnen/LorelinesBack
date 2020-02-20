@@ -1,17 +1,21 @@
 /** @format */
 
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 var FieldContent = new mongoose.Schema({
-  type: Number,
-  name: String,
+  type: {
+    type: String,
+    required: true,
+    enum: ['EVENT_NODE', 'BRANCH_NODE', 'WARP_NODE']
+  },
+  name: { type: String, required: true },
   content: [],
   _id: false
-});
+})
 
 var EntityInstanceSchema = new mongoose.Schema({
-  name: String,
-  content: [FieldContent]
-});
+  name: { type: String, required: true },
+  content: { type: [FieldContent], required: true }
+})
 
-module.exports = mongoose.model('EntityInstance', EntityInstanceSchema);
+module.exports = mongoose.model('EntityInstance', EntityInstanceSchema)

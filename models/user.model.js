@@ -7,10 +7,16 @@ mongoose.set('useCreateIndex', true)
 
 //Defaults for user accounts
 var UserSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String,
-  saltSecret: String,
+  name: { type: String, require: true },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: '([a-zA-Z0-9_-.]+)@([a-zA-Z0-9_-.]+).([a-zA-Z]{2,5})'
+    }
+  },
+  password: { type: String, require: true },
   lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }]
 })
 
