@@ -1,9 +1,9 @@
 /** @format */
 
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 
-mongoose.set('useCreateIndex', true);
+mongoose.set('useCreateIndex', true)
 
 //Defaults for user accounts
 var UserSchema = new mongoose.Schema({
@@ -12,16 +12,16 @@ var UserSchema = new mongoose.Schema({
   password: String,
   saltSecret: String,
   lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }]
-});
+})
 
 UserSchema.statics.generateJwt = user => {
   return jwt.sign(
-    { name: user.name, email: user.email },
+    { id: user._id, name: user.name, email: user.email },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_EXP
     }
-  );
-};
+  )
+}
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', UserSchema)
