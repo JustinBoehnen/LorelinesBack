@@ -43,6 +43,28 @@ router.post('/:lorelineid/entities', (req, res) => {
 });
 
 /**
+ * Purpose: Adds a custom entity to a lorline
+ * Full path: /api/lorelines/:lorelineid/entities
+ * req: :lorelineid: ObjectId of loreline to update
+ * res: all customEntities and instances of a specific loreline
+ */
+router.get('/:lorelineid/entities', (req, res) => {
+  Loreline.findById(req.params.lorelineid)
+    .populate({
+      path: 'customEntities',
+      populate: {
+        path: 'instances',
+        model: 'EntityInstance'
+      }
+    })
+    .exec((err, loreline) => {
+      if (!err && loreline != null)
+        res.status(status.OK).send(loreline.customEntities);
+      else res.status(status.NOT_FOUND).send('loreline not found');
+    });
+});
+
+/**
  * Purpose: Fetches a custom entity from a loreline
  * Full path: /api/lorelines/:lorelineid/entities/:ceid
  * req: :lorelineid: ObjectId of loreline

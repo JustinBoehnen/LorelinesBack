@@ -51,6 +51,7 @@ router.post('/', (req, res) => {
 router.post('/:userid/lorelines', (req, res) => {
   var loreline = new Loreline({
     name: req.body.name,
+    modified: Date.now(),
     timelineData: [],
     customEntities: []
   });
@@ -91,6 +92,16 @@ router.get('/:userid/lorelines/:lorelineid', (req, res) => {
     .exec((err, loreline) => {
       if (!err && loreline != null) res.status(status.OK).send(loreline);
       else res.status(status.NOT_FOUND).send('loreline not found');
+    });
+});
+
+// NOT YET DOCUMENTED: RETURNS SORTED ARRAY OF ALL LORELINES
+router.get('/:userid/lorelines', (req, res) => {
+  Loreline.find({})
+    .sort({ modified: 'descending' })
+    .exec((err, lorelines) => {
+      if (!err && loreline != null) res.status(status.OK).send(lorelines);
+      else res.status(status.NOT_FOUND).send('lorelines not found');
     });
 });
 
