@@ -18,7 +18,7 @@ var CustomEntitySchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: '#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})'
+      validator: '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'
     }
   },
   content: { type: [FieldType], required: false },
