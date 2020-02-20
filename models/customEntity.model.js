@@ -17,8 +17,9 @@ var CustomEntitySchema = new mongoose.Schema({
   color: {
     type: String,
     required: true,
-    validate: {
-      validator: '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'
+    validate: function(v) {
+      if (v === undefined) return true
+      return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(v)
     }
   },
   content: { type: [FieldType], required: false },

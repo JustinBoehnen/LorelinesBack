@@ -12,7 +12,10 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    validate: '/^([a-zA-Z0-9_-.]+)@([a-zA-Z0-9_-.]+).([a-zA-Z]{2,5})$/'
+    validate: function(v) {
+      if (v === undefined) return true
+      return /^([a-zA-Z0-9_-.]+)@([a-zA-Z0-9_-.]+).([a-zA-Z]{2,5})$/.test(v)
+    }
   },
   password: { type: String, require: true },
   lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }]
