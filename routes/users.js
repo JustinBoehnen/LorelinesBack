@@ -173,7 +173,7 @@ router.put('/token', (req, res) => {
     if (err) {
       res.status(status.UNAUTHORIZED).send('failed to verify token');
     } else if (Date.now() < decoded.exp * 1000) {
-      User.findOne({ id: decoded.id }, (err, user) => {
+      User.findById(decoded.id, (err, user) => {
         if (!err && user != null) {
           res.status(status.CREATED).send(User.generateJwt(user));
         } else {
