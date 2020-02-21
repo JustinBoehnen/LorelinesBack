@@ -55,7 +55,8 @@ router.get('/:lorelineid/entities', (req, res) => {
       populate: {
         path: 'instances',
         model: 'EntityInstance'
-      }
+      },
+      select: '_id name'
     })
     .exec((err, loreline) => {
       if (!err && loreline != null)

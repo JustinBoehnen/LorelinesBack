@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken')
 
 mongoose.set('useCreateIndex', true)
 
-//Defaults for user accounts
 var UserSchema = new mongoose.Schema({
   name: { type: String, require: true },
   email: {
@@ -13,7 +12,6 @@ var UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: function(v) {
-      if (v === undefined) return true
       return /^([a-zA-Z0-9_-.]+)@([a-zA-Z0-9_-.]+).([a-zA-Z]{2,5})$/.test(v)
     }
   },
