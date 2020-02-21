@@ -29,9 +29,9 @@ router.post('/', (req, res) => {
       });
 
       user.save(err => {
-        if (!err) res.send(User.generateJwt(user));
+        if (!err) res.status(status.OK).send(User.generateJwt(user));
         else {
-          res.status(status.CONFLICT).send(['failed to save user']);
+          res.status(status.CONFLICT).send(err.message);
           console.log(err);
         }
       });
@@ -66,12 +66,12 @@ router.post('/:userid/lorelines', (req, res) => {
           else res.status(status.NOT_FOUND).send('user not found');
         }
       );
-    } else res.status(status.CONFLICT).send('faild to save loreline');
+    } else res.status(status.CONFLICT).send(err.message);
   });
 });
 
 /**
- * Purpose: Fetches a loreline
+ * Purpose: Fetches a users specific loreline
  * Full path: /api/users/:userid/lorelines/:lorelineid
  * req: :userid: ObjectId of user
  *      :lorelineid: ObjectId of loreline to fetch
@@ -95,7 +95,13 @@ router.get('/:userid/lorelines/:lorelineid', (req, res) => {
     });
 });
 
-// NOT YET DOCUMENTED: RETURNS SORTED ARRAY A USERS LORELINES
+/**
+ * Purpose: Fetches all of a users lorelines
+ * Full path: /api/users/:userid/lorelines
+ * req: :userid: ObjectId of user to fetch from
+ * res: Array of loreline _ids, names, and modified dates
+ *      [{_id, name, modified}]
+ */
 router.get('/:userid/lorelines', (req, res) => {
   User.findById(req.params.userid, (err, user) => {
     if (!err && user != null) {
@@ -110,6 +116,13 @@ router.get('/:userid/lorelines', (req, res) => {
   });
 });
 
+/**
+ * Purpose: Removes a loreline from a user
+ * Full path: /api/users/:userid/lorelines/:lorelineid
+ * req: :userid: ObjectId of user
+ *      :lorelineid: ObjectId of loreline to delete
+ * res: Status
+ */
 router.delete('/:userid/lorelines/:lorelineid', (req, res) => {
   User.findByIdAndUpdate(
     req.params.userid,
