@@ -83,8 +83,6 @@ router.get('/:lorelineid/entities/:ceid', (req, res) => {
     })
 })
 
-//IDEA: route: GET for CEs that does not populate children
-
 /**
  * Purpose: Removes a custom entity from a loreline
  * Full path: /api/lorelines/:lorelineid/entities/:ceid

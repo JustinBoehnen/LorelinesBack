@@ -95,17 +95,19 @@ router.get('/:userid/lorelines/:lorelineid', (req, res) => {
     })
 })
 
-// NOT YET DOCUMENTED: RETURNS SORTED ARRAY OF ALL LORELINES
+// NOT YET DOCUMENTED: RETURNS SORTED ARRAY A USERS LORELINES
 router.get('/:userid/lorelines', (req, res) => {
-  Loreline.find({})
+  var user = User.findById(req.params.userid)
+
+  Loreline.find({ _id: { $in: user.lorelines } })
     .sort({ modified: 'descending' })
+    .select('_id name modified')
     .exec((err, lorelines) => {
       if (!err && loreline != null) res.status(status.OK).send(lorelines)
       else res.status(status.NOT_FOUND).send('lorelines not found')
     })
 })
 
-// ALMOST WORKING: DOES NOT RECURSIVELY REMOVE REFERENCES
 router.delete('/:userid/lorelines/:lorelineid', (req, res) => {
   User.findByIdAndUpdate(
     req.params.userid,
