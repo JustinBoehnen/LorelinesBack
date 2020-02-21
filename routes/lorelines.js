@@ -52,11 +52,7 @@ router.get('/:lorelineid/entities', (req, res) => {
   Loreline.findById(req.params.lorelineid)
     .populate({
       path: 'customEntities',
-      populate: {
-        path: 'instances',
-        model: 'EntityInstance'
-      },
-      select: '_id name'
+      select: '_id name color'
     })
     .exec((err, loreline) => {
       if (!err && loreline != null)
