@@ -97,15 +97,17 @@ router.get('/:userid/lorelines/:lorelineid', (req, res) => {
 
 // NOT YET DOCUMENTED: RETURNS SORTED ARRAY A USERS LORELINES
 router.get('/:userid/lorelines', (req, res) => {
-  var user = User.findById(req.params.userid);
-
-  Loreline.find({ _id: { $in: user.lorelines } })
-    .sort({ modified: 'descending' })
-    .select('_id name modified')
-    .exec((err, lorelines) => {
-      if (!err && lorelines != null) res.status(status.OK).send(lorelines);
-      else res.status(status.NOT_FOUND).send('lorelines not found');
-    });
+  User.findById(req.params.userid, (err, user) => {
+    if (!err && user != null) {
+      Loreline.find({ _id: { $in: user.lorelines } })
+        .sort({ modified: 'descending' })
+        .select('_id name modified')
+        .exec((err, lorelines) => {
+          if (!err && lorelines != null) res.status(status.OK).send(lorelines);
+          else res.status(status.NOT_FOUND).send('lorelines not found');
+        });
+    } else res.status(status.NOT_FOUND).send('user not found');
+  });
 });
 
 router.delete('/:userid/lorelines/:lorelineid', (req, res) => {
