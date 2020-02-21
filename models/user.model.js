@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const Loreline = require('./loreline.model')
 
 mongoose.set('useCreateIndex', true)
 
@@ -17,6 +18,12 @@ var UserSchema = new mongoose.Schema({
   },
   password: { type: String, require: true },
   lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }]
+})
+
+// Removes Lorelines
+UserSchema.pre('remove', next => {
+  Loreline.remove({ _id: { $in: this.lorelines } })
+  next()
 })
 
 UserSchema.statics.generateJwt = user => {

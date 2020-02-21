@@ -1,6 +1,7 @@
 /** @format */
 
 const mongoose = require('mongoose')
+const EntityInstance = require('./entityInstance.model')
 
 var FieldType = new mongoose.Schema({
   type: {
@@ -23,6 +24,12 @@ var CustomEntitySchema = new mongoose.Schema({
   },
   content: { type: [FieldType], required: false },
   instances: [{ type: mongoose.Types.ObjectId, ref: 'EntityInstance' }] //entityInstance
+})
+
+// Removes Instances
+CustomEntitySchema.pre('remove', next => {
+  EntityInstance.remove({ _id: { $in: this.instances } })
+  next()
 })
 
 module.exports = mongoose.model('CustomEntity', CustomEntitySchema)

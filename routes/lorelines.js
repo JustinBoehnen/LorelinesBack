@@ -48,11 +48,16 @@ router.post('/:lorelineid/entities', (req, res) => {
  * req: :lorelineid: ObjectId of loreline to fetch frome
  * res: all customEntities and instances of a specific loreline
  */
-router.get('/:lorelineid/entities', (req, res) => {
+router.get('/:lorelineid/directory', (req, res) => {
   Loreline.findById(req.params.lorelineid)
     .populate({
       path: 'customEntities',
-      select: '_id name color'
+      populate: {
+        path: 'instances',
+        model: 'EntityInstance',
+        select: '_id name'
+      },
+      select: '_id name color instances'
     })
     .exec((err, loreline) => {
       if (!err && loreline != null)
@@ -87,7 +92,6 @@ router.get('/:lorelineid/entities/:ceid', (req, res) => {
  *      :ceid: ObjectId of custom entity to remove
  * res: status
  */
-// ALMOST WORKING: DOES NOT RECURSIVELY REMOVE REFERENCES
 router.delete('/:lorelineid/entities/:ceid', (req, res) => {
   Loreline.findByIdAndUpdate(
     req.params.lorelineid,
