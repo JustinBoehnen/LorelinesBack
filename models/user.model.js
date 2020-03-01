@@ -22,7 +22,11 @@ var UserSchema = new mongoose.Schema({
     }
   },
   password: { type: String, required: [true, 'user password is required'] },
-  lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }]
+  lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }],
+  created: {
+    type: Date,
+    required: [true, 'user creation (date) is required']
+  }
 });
 
 // Removes Lorelines
@@ -33,7 +37,7 @@ UserSchema.pre('remove', next => {
 
 UserSchema.statics.generateJwt = user => {
   return jwt.sign(
-    { id: user._id, name: user.name, email: user.email },
+    { id: user._id, name: user.name, email: user.email, created: user.created },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_EXP
