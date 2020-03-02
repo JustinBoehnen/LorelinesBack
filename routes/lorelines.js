@@ -19,6 +19,11 @@ const EntityInstance = require('../models/entityInstance.model');
  * res: status
  */
 router.post('/:lorelineid/entities', (req, res) => {
+  console.log('in here!');
+  console.log('name: ', req.body.name);
+  console.log('color: ', req.body.color);
+  console.log('content: ', req.body.content);
+
   var customEntity = new CustomEntity({
     name: req.body.name,
     color: req.body.color,
@@ -37,6 +42,7 @@ router.post('/:lorelineid/entities', (req, res) => {
         }
       );
     } else {
+      console.log(err.message);
       res.status(status.CONFLICT).send(err.message);
     }
   });

@@ -18,7 +18,7 @@ var FieldContent = new mongoose.Schema({
     ]
   },
   name: { type: String, required: [true, 'field name is required'] },
-  content: [],
+  content: [], // used for RADIOLIST and LIST
   _id: false
 });
 
