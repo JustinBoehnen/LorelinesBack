@@ -1,7 +1,7 @@
 /** @format */
 
-const mongoose = require('mongoose');
-const EntityInstance = require('./entityInstance.model');
+const mongoose = require('mongoose')
+const EntityInstance = require('./entityInstance.model')
 
 var FieldType = new mongoose.Schema({
   type: {
@@ -9,6 +9,7 @@ var FieldType = new mongoose.Schema({
     required: [true, 'field type is required'],
     enum: [
       'TEXT_FIELD',
+      'NUMBER_FIELD',
       'LIST_FIELD',
       'REFERENCE_FIELD',
       'CHECKBOX_FIELD',
@@ -21,9 +22,10 @@ var FieldType = new mongoose.Schema({
   name: { type: String, required: [true, 'field name is required'] },
   content: [], // used for radio lists
   _id: false
-});
+})
 
 // TEXT_FIELD       : A BLOCK OF TEXT (EX: BIO, NAME)
+// NUMBER_FIELD     : A NUMBER (EX: AGE)
 // LIST_FIELD       : A LIST OF OTHER INSTANCES (EX: FRIENDS)
 // REFERENCE_FIELD  : A REFERENCE TO A SINGLE INSTANCE (EX: MOM)
 // CHECKBOX_FIELD   : A BOOLEAN CHECKBOX (EX: MARRIED)
@@ -39,7 +41,7 @@ var CustomEntitySchema = new mongoose.Schema({
     required: [true, 'entity color is required'],
     validate: {
       validator: function(v) {
-        return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(v);
+        return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(v)
       },
       message: color => `${color} is an invalid color`
     }
@@ -49,12 +51,12 @@ var CustomEntitySchema = new mongoose.Schema({
     required: [true, 'entity content is required']
   },
   instances: [{ type: mongoose.Types.ObjectId, ref: 'EntityInstance' }] //entityInstance
-});
+})
 
 // Removes Instances
 CustomEntitySchema.pre('remove', next => {
-  EntityInstance.remove({ _id: { $in: this.instances } });
-  next();
-});
+  EntityInstance.remove({ _id: { $in: this.instances } })
+  next()
+})
 
-module.exports = mongoose.model('CustomEntity', CustomEntitySchema);
+module.exports = mongoose.model('CustomEntity', CustomEntitySchema)
