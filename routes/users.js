@@ -15,9 +15,9 @@ const User = require('../models/user.model')
 const Loreline = require('../models/loreline.model')
 
 const s3 = new aws.S3({
-  accessKeyId: 'AKIA2XV64GJEMCOUCVP4',
-  secretAccessKey: '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',
-  Bucket: 'lorelines-image-library'
+  accessKeyId: process.env.S3ACCESS,
+  secretAccessKey: process.env.S3SECRET,
+  Bucket: process.env.S3BUCKET
 })
 
 /**
