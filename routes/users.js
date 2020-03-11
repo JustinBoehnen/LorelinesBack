@@ -1,13 +1,62 @@
 /** @format */
 
-const express = require('express');
-const router = express.Router();
-const status = require('http-status-codes');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const express = require('express')
+const router = express.Router()
+const aws = require('aws-sdk')
+const multerS3 = require('multer-s3')
+const multer = require('multer')
+const path = require('path')
+const url = require('url')
+const status = require('http-status-codes')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
-const User = require('../models/user.model');
-const Loreline = require('../models/loreline.model');
+const User = require('../models/user.model')
+const Loreline = require('../models/loreline.model')
+
+const s3 = new aws.S3({
+  accessKeyId: 'AKIA2XV64GJEMCOUCVP4',
+  secretAccessKey: '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',
+  Bucket: 'lorelines-image-library'
+})
+
+/**
+ * Single Upload
+ */
+const lorelineImageUpload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'lorelines-image-library',
+    acl: 'public-read',
+    key: function(req, file, cb) {
+      cb(
+        null,
+        path.basename(file.originalname, path.extname(file.originalname)) +
+          '-' +
+          Date.now() +
+          path.extname(file.originalname)
+      )
+    }
+  }),
+  limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
+  fileFilter: function(req, file, cb) {
+    checkFileType(file, cb)
+  }
+}).single('image')
+
+function checkFileType(file, cb) {
+  // Allowed ext
+  const filetypes = /jpeg|jpg|png|gif/
+  // Check ext
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+  // Check mime
+  const mimetype = filetypes.test(file.mimetype)
+  if (mimetype && extname) {
+    return cb(null, true)
+  } else {
+    cb('Error: Images Only!')
+  }
+}
 
 // <<<<   api/users   >>>>
 
@@ -27,20 +76,49 @@ router.post('/', (req, res) => {
         email: req.body.email,
         password: hash,
         created: Date.now()
-      });
+      })
 
       user.save(err => {
-        if (!err) res.status(status.OK).send(User.generateJwt(user));
+        if (!err) res.status(status.OK).send(User.generateJwt(user))
         else {
-          res.status(status.CONFLICT).send(err.message);
-          console.log(err);
+          res.status(status.CONFLICT).send(err.message)
+          console.log(err)
         }
-      });
+      })
     } else {
-      res.status(status.CONFLICT).send(['failed to hash password']);
+      res.status(status.CONFLICT).send(['failed to hash password'])
     }
-  });
-});
+  })
+})
+
+/**
+ * Purpose: Adds a new loreline to a user
+ * Full path: /api/users/:userid/lorelines
+ * req: userid: ObjectId of user to add loreline to
+ *      name: String name of loreline being added
+ * res: lorelineId: ObjectId of new loreline
+ */
+router.post('/:userid/images', (req, res) => {
+  lorelineImageUpload(req, res, error => {
+    // console.log( 'requestOkokok', req.file );
+    // console.log( 'error', error );
+    if (error) {
+      console.log('errors', error)
+      res.json({ error: error })
+    } else {
+      // If File not found
+      if (req.file === undefined) {
+        console.log('Error: No File Selected!')
+        res.json('Error: No File Selected')
+      } else {
+        // If Success
+        //const imageName = req.file.key
+        const imageLocation = req.file.location // Save the file name into database into profile model
+        res.status(status.OK).send(imageLocation)
+      }
+    }
+  })
+})
 
 /**
  * Purpose: Adds a new loreline to a user
@@ -50,14 +128,13 @@ router.post('/', (req, res) => {
  * res: lorelineId: ObjectId of new loreline
  */
 router.post('/:userid/lorelines', (req, res) => {
-  var imagePath = req.body.image || 'yes';
   var loreline = new Loreline({
     name: req.body.name,
-    image: imagePath,
+    image: req.body.image,
     modified: Date.now(),
     timelineData: [],
     customEntities: []
-  });
+  })
 
   loreline.save(err => {
     if (!err) {
@@ -65,13 +142,13 @@ router.post('/:userid/lorelines', (req, res) => {
         req.params.userid,
         { $push: { lorelines: loreline.id } },
         (err, user) => {
-          if (!err && user != null) res.status(status.OK).send(loreline.id);
-          else res.status(status.NOT_FOUND).send('user not found');
+          if (!err && user != null) res.status(status.OK).send(loreline.id)
+          else res.status(status.NOT_FOUND).send('user not found')
         }
-      );
-    } else res.status(status.CONFLICT).send(err.message);
-  });
-});
+      )
+    } else res.status(status.CONFLICT).send(err.message)
+  })
+})
 
 /**
  * Purpose: Fetches a users specific loreline
@@ -81,7 +158,7 @@ router.post('/:userid/lorelines', (req, res) => {
  * res: Loreline object with populated children
  */
 router.get('/:userid/lorelines/:lorelineid', (req, res) => {
-  var options = { path: 'customEntities.instances', model: 'EntityInstance' };
+  var options = { path: 'customEntities.instances', model: 'EntityInstance' }
 
   Loreline.findById(req.params.lorelineid)
     .populate('timelineData')
@@ -93,10 +170,10 @@ router.get('/:userid/lorelines/:lorelineid', (req, res) => {
       }
     })
     .exec((err, loreline) => {
-      if (!err && loreline != null) res.status(status.OK).send(loreline);
-      else res.status(status.NOT_FOUND).send('loreline not found');
-    });
-});
+      if (!err && loreline != null) res.status(status.OK).send(loreline)
+      else res.status(status.NOT_FOUND).send('loreline not found')
+    })
+})
 
 /**
  * Purpose: Fetches all of a users lorelines
@@ -110,14 +187,14 @@ router.get('/:userid/lorelines', (req, res) => {
     if (!err && user != null) {
       Loreline.find({ _id: { $in: user.lorelines } })
         .sort({ modified: 'descending' })
-        .select('_id name modified')
+        .select('_id name image modified')
         .exec((err, lorelines) => {
-          if (!err && lorelines != null) res.status(status.OK).send(lorelines);
-          else res.status(status.NOT_FOUND).send('lorelines not found');
-        });
-    } else res.status(status.NOT_FOUND).send('user not found');
-  });
-});
+          if (!err && lorelines != null) res.status(status.OK).send(lorelines)
+          else res.status(status.NOT_FOUND).send('lorelines not found')
+        })
+    } else res.status(status.NOT_FOUND).send('user not found')
+  })
+})
 
 /**
  * Purpose: Removes a loreline from a user
@@ -135,13 +212,13 @@ router.delete('/:userid/lorelines/:lorelineid', (req, res) => {
     (err, user) => {
       if (!err && user != null)
         Loreline.findByIdAndDelete(req.params.lorelineid, (err, loreline) => {
-          if (!err && loreline != null) res.sendStatus(status.OK);
-          else res.status(status.NOT_FOUND).send('loreline not found');
-        });
-      else res.status(status.NOT_FOUND).send('user not found');
+          if (!err && loreline != null) res.sendStatus(status.OK)
+          else res.status(status.NOT_FOUND).send('loreline not found')
+        })
+      else res.status(status.NOT_FOUND).send('user not found')
     }
-  );
-});
+  )
+})
 
 /**
  * Purpose: Logs a user into the site
@@ -154,14 +231,14 @@ router.post('/token', (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!err && user !== null) {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
-        if (result) res.status(status.OK).send(User.generateJwt(user));
-        else res.status(status.UNAUTHORIZED).send('password does not match');
-      });
+        if (result) res.status(status.OK).send(User.generateJwt(user))
+        else res.status(status.UNAUTHORIZED).send('password does not match')
+      })
     } else {
-      res.status(status.NOT_FOUND).send('user not found');
+      res.status(status.NOT_FOUND).send('user not found')
     }
-  });
-});
+  })
+})
 
 /**
  * Purpose: Updates the users token with a
@@ -174,19 +251,19 @@ router.post('/token', (req, res) => {
 router.put('/token', (req, res) => {
   jwt.verify(req.body.token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      res.status(status.UNAUTHORIZED).send('failed to verify token');
+      res.status(status.UNAUTHORIZED).send('failed to verify token')
     } else if (Date.now() < decoded.exp * 1000) {
       User.findById(decoded.id, (err, user) => {
         if (!err && user != null) {
-          res.status(status.CREATED).send(User.generateJwt(user));
+          res.status(status.CREATED).send(User.generateJwt(user))
         } else {
-          res.status(status.NOT_FOUND).send('user not found');
+          res.status(status.NOT_FOUND).send('user not found')
         }
-      });
+      })
     } else {
-      res.status(status.UNAUTHORIZED).send('token expired');
+      res.status(status.UNAUTHORIZED).send('token expired')
     }
-  });
-});
+  })
+})
 
-module.exports = router;
+module.exports = router
