@@ -1,23 +1,32 @@
 /** @format */
 
-const mongoose = require('mongoose');
-const EntityInstance = require('./entityInstance.model');
+const mongoose = require("mongoose");
+const EntityInstance = require("./entityInstance.model");
 
 var FieldType = new mongoose.Schema({
   type: {
     type: String,
-    required: [true, 'field type is required'],
-    enum: ['EVENT_NODE', 'BRANCH_NODE', 'WARP_NODE']
+    required: [true, "field type is required"],
+    enum: [
+      "TEXT_FIELD",
+      "LIST_FIELD",
+      "REFERENCE_FIELD",
+      "CHECKBOX_FIELD",
+      "RADIOLIST_FIELD",
+      "IMAGE_FIELD",
+      "SECTION_HEADER",
+      "SECTION_DIVIDER"
+    ]
   },
-  name: { type: String, required: [true, 'field name is required'] },
+  name: { type: String, required: [true, "field name is required"] },
   _id: false
 });
 
 var CustomEntitySchema = new mongoose.Schema({
-  name: { type: String, required: [true, 'entity name is required'] },
+  name: { type: String, required: [true, "entity name is required"] },
   color: {
     type: String,
-    required: [true, 'entity color is required'],
+    required: [true, "entity color is required"],
     validate: {
       validator: function(v) {
         return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(v);
@@ -27,15 +36,15 @@ var CustomEntitySchema = new mongoose.Schema({
   },
   content: {
     type: [FieldType],
-    required: [true, 'entity content is required']
+    required: [true, "entity content is required"]
   },
-  instances: [{ type: mongoose.Types.ObjectId, ref: 'EntityInstance' }] //entityInstance
+  instances: [{ type: mongoose.Types.ObjectId, ref: "EntityInstance" }] //entityInstance
 });
 
 // Removes Instances
-CustomEntitySchema.pre('remove', next => {
+CustomEntitySchema.pre("remove", next => {
   EntityInstance.remove({ _id: { $in: this.instances } });
   next();
 });
 
-module.exports = mongoose.model('CustomEntity', CustomEntitySchema);
+module.exports = mongoose.model("CustomEntity", CustomEntitySchema);
