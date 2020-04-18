@@ -1,11 +1,11 @@
 /** @format */
 
-const express = require('express');
-const router = express.Router();
-const status = require('http-status-codes');
-const Loreline = require('../models/loreline.model');
-const CustomEntity = require('../models/customEntity.model');
-const EntityInstance = require('../models/entityInstance.model');
+const express = require('express')
+const router = express.Router()
+const status = require('http-status-codes')
+const Loreline = require('../models/loreline.model')
+const CustomEntity = require('../models/customEntity.model')
+const EntityInstance = require('../models/entityInstance.model')
 
 // <<<<   api/lorelines   >>>>
 
@@ -24,7 +24,7 @@ router.post('/:lorelineid/entities', (req, res) => {
     color: req.body.color,
     content: req.body.content,
     instances: []
-  });
+  })
   customEntity.save(err => {
     if (!err) {
       Loreline.findByIdAndUpdate(
@@ -32,15 +32,15 @@ router.post('/:lorelineid/entities', (req, res) => {
         { $push: { customEntities: customEntity.id } },
         (err, loreline) => {
           if (!err && loreline != null)
-            res.status(status.OK).send(customEntity.id);
-          else res.status(status.NOT_FOUND).send('loreline not found');
+            res.status(status.OK).send(customEntity.id)
+          else res.status(status.NOT_FOUND).send('loreline not found')
         }
-      );
+      )
     } else {
-      res.status(status.CONFLICT).send(err.message);
+      res.status(status.CONFLICT).send(err.message)
     }
-  });
-});
+  })
+})
 
 /**
  * Purpose: Fethes all custom entities from a loreline
@@ -61,10 +61,10 @@ router.get('/:lorelineid/directory', (req, res) => {
     })
     .exec((err, loreline) => {
       if (!err && loreline != null)
-        res.status(status.OK).send(loreline.customEntities);
-      else res.status(status.NOT_FOUND).send('loreline not found');
-    });
-});
+        res.status(status.OK).send(loreline.customEntities)
+      else res.status(status.NOT_FOUND).send('loreline not found')
+    })
+})
 
 /**
  * Purpose: Fetches a custom entity from a loreline
@@ -78,10 +78,10 @@ router.get('/:lorelineid/entities/:ceid', (req, res) => {
     .populate('instances')
     .exec((err, entity) => {
       if (!err && entity != null) {
-        res.status(status.OK).send(entity);
-      } else res.status(status.NOT_FOUND).send('custom entity not found');
-    });
-});
+        res.status(status.OK).send(entity)
+      } else res.status(status.NOT_FOUND).send('custom entity not found')
+    })
+})
 
 /**
  * Purpose: Removes a custom entity from a loreline
@@ -99,13 +99,13 @@ router.delete('/:lorelineid/entities/:ceid', (req, res) => {
     (err, loreline) => {
       if (!err && loreline != null)
         CustomEntity.findByIdAndDelete(req.params.ceid, (err, entity) => {
-          if (!err && entity != null) res.sendStatus(status.OK);
-          else res.status(status.NOT_FOUND).send('custom entity not found');
-        });
-      else res.status(status.NOT_FOUND).send('loreline not found');
+          if (!err && entity != null) res.sendStatus(status.OK)
+          else res.status(status.NOT_FOUND).send('custom entity not found')
+        })
+      else res.status(status.NOT_FOUND).send('loreline not found')
     }
-  );
-});
+  )
+})
 
 /**
  * Purpose: Adds an instance to a custom entity
@@ -120,7 +120,7 @@ router.post('/:lorelineid/entities/:ceid/instances', (req, res) => {
   var entityInstance = new EntityInstance({
     name: req.body.name,
     content: req.body.content
-  });
+  })
   entityInstance.save(err => {
     if (!err) {
       CustomEntity.findByIdAndUpdate(
@@ -128,13 +128,13 @@ router.post('/:lorelineid/entities/:ceid/instances', (req, res) => {
         { $push: { instances: entityInstance.id } },
         (err, entity) => {
           if (!err && entity != null)
-            res.status(status.OK).send(entityInstance.id);
-          else res.status(status.NOT_FOUND).send('custom entity not found');
+            res.status(status.OK).send(entityInstance.id)
+          else res.status(status.NOT_FOUND).send('custom entity not found')
         }
-      );
-    } else res.status(status.CONFLICT).send(err.message);
-  });
-});
+      )
+    } else res.status(status.CONFLICT).send(err.message)
+  })
+})
 
 /**
  * Purpose: Fetches an entity instance from a custom entity
@@ -147,10 +147,10 @@ router.post('/:lorelineid/entities/:ceid/instances', (req, res) => {
 router.get('/:lorelineid/entities/:ceid/instances/:eiid', (req, res) => {
   EntityInstance.findById(req.params.eiid, (err, instance) => {
     if (!err && instance != null) {
-      res.status(status.OK).send(instance);
-    } else res.status(status.NOT_FOUND).send('entity instance not found');
-  });
-});
+      res.status(status.OK).send(instance)
+    } else res.status(status.NOT_FOUND).send('entity instance not found')
+  })
+})
 
 /**
  * Purpose: Removes an instance from a custom entity
@@ -169,13 +169,13 @@ router.delete('/:lorelineid/entities/:ceid/instances/:eiid', (req, res) => {
     (err, entity) => {
       if (!err && entity != null)
         EntityInstance.findByIdAndDelete(req.params.eiid, (err, instance) => {
-          if (!err && instance != null) res.sendStatus(status.OK);
-          else res.status(status.NOT_FOUND).send('entity instance not found');
-        });
-      else res.status(status.NOT_FOUND).send('custom entity not found');
+          if (!err && instance != null) res.sendStatus(status.OK)
+          else res.status(status.NOT_FOUND).send('entity instance not found')
+        })
+      else res.status(status.NOT_FOUND).send('custom entity not found')
     }
-  );
-});
+  )
+})
 
 // PLANNED ROUTES:
 
@@ -189,4 +189,4 @@ router.delete('/:lorelineid/entities/:ceid/instances/:eiid', (req, res) => {
 
 // Get all Timeline nodes GET
 
-module.exports = router;
+module.exports = router
