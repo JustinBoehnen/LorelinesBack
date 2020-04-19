@@ -1,22 +1,21 @@
-var mongoose = require("mongoose");
-var mongoDB = "mongodb://127.0.0.1/lorelines_test_database";
-mongoose.connect(mongoDB);
-const User = require("../user.model");
+const mongoose = require("mongoose");
+const dbHandler = require("../../db-handler");
+const userModel = require("../user.model");
 
-describe("User model test", () => {
-  beforeAll(async () => {
-    await User.remove({});
-  });
+beforeAll(async () => {
+  await dbHandler.connect();
 });
 
 afterEach(async () => {
-  await User.remove({});
+  await dbHandler.clearDatabase();
 });
 
 afterAll(async () => {
-  await mongoose.connection.close();
+  await dbHandler.closeDatabase();
 });
 
-it("has a module", () => {
-  expect(User).toBeDefined();
+describe("user model test", () => {
+  it("has a module", () => {
+    expect(userModel).toBeDefined();
+  });
 });
