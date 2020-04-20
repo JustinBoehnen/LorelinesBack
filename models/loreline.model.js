@@ -1,8 +1,13 @@
 /** @format */
 
+process.on('unhandledRejection', function (err) {
+	console.log(err)
+})
+
 const mongoose = require('mongoose')
 const CustomEntity = require('./customEntity.model')
-const User = require('./user.model')
+
+mongoose.set('useFindAndModify', false)
 
 var LorelineSchema = new mongoose.Schema({
 	name: { type: String, required: [true, 'loreline name is required'] },
@@ -16,14 +21,8 @@ var LorelineSchema = new mongoose.Schema({
 	ownerId: { type: mongoose.Types.ObjectId, ref: 'User', required: [true, 'owner id is required'] },
 })
 
-LorelineSchema.pre('save', (next) => {
-	User.findByIdAndUpdate(this.ownerId, { $inc: { 'limits.lorelines.count': 1 } })
-	next()
-})
-
 // Removes Custom Entities
-LorelineSchema.pre('remove', (next) => {
-	User.findByIdAndUpdate(this.ownerId, { $inc: { 'limits.lorelines.count': -1 } })
+LorelineSchema.pre('remove', { document: true }, function (next) {
 	CustomEntity.remove({ _id: { $in: this.customEntities } })
 	next()
 })

@@ -41,13 +41,8 @@ var EntityInstanceSchema = new mongoose.Schema({
 	ownerId: { type: mongoose.Types.ObjectId, ref: 'User', required: [true, 'owner id is required'] },
 })
 
-EntityInstanceSchema.pre('save', (next) => {
-	User.findByIdAndUpdate(this.ownerId, { $inc: { 'limits.instances.count': 1 } })
-	next()
-})
-
 EntityInstanceSchema.pre('remove', (next) => {
-	User.findByIdAndUpdate(this.ownerId, { $inc: { 'limits.instances.count': -1 } })
+	User.updateOne({ _id: this.ownerId }, { $inc: { 'limits.instances.count': -1 } })
 	next()
 })
 

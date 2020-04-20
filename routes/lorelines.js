@@ -38,6 +38,7 @@ router.post('/:lorelineid/entities', (req, res) => {
 				{ $push: { customEntities: customEntity.id } },
 				(err, loreline) => {
 					if (!err && loreline != null) {
+						User.updateOne({ _id: loreline.ownerId }, { $inc: { 'limits.entities.current': 1 } })
 						res.status(status.OK).send(customEntity.id)
 					} else res.status(status.NOT_FOUND).send('loreline not found')
 				}
@@ -129,21 +130,22 @@ router.post('/:lorelineid/entities/:ceid/instances', (req, res) => {
 	})
 
 	Loreline.findById(req.params.lorelineid, (err, loreline) => {
-		if (!err && loreline != null) entityInstance.ownerId = loreline.ownerId
-	})
-
-	entityInstance.save((err) => {
-		if (!err) {
-			CustomEntity.findByIdAndUpdate(
-				req.params.ceid,
-				{ $push: { instances: entityInstance.id } },
-				(err, entity) => {
-					if (!err && entity != null) {
-						res.status(status.OK).send(entityInstance.id)
-					} else res.status(status.NOT_FOUND).send('custom entity not found')
-				}
-			)
-		} else res.status(status.CONFLICT).send(err.message)
+		if (!err && loreline != null) {
+			entityInstance.save((err) => {
+				if (!err) {
+					CustomEntity.findByIdAndUpdate(
+						req.params.ceid,
+						{ $push: { instances: entityInstance.id }, $set: { ownerId: loreline.ownerId } },
+						(err, entity) => {
+							if (!err && entity != null) {
+								User.updateOne({ _id: entity.ownerId }, { $inc: { 'limits.entities.current': 1 } })
+								res.status(status.OK).send(entityInstance.id)
+							} else res.status(status.NOT_FOUND).send('custom entity not found')
+						}
+					)
+				} else res.status(status.CONFLICT).send(err.message)
+			})
+		}
 	})
 })
 

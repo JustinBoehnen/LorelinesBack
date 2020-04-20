@@ -153,10 +153,15 @@ router.post('/:userid/lorelines', (req, res) => {
 
 	loreline.save((err) => {
 		if (!err) {
-			User.findByIdAndUpdate(req.params.userid, { $push: { lorelines: loreline.id } }, (err, user) => {
-				if (!err && user != null) res.status(status.OK).send(loreline.id)
-				else res.status(status.NOT_FOUND).send('user not found')
-			})
+			User.findByIdAndUpdate(
+				req.params.userid,
+				{ $push: { lorelines: loreline.id }, $inc: { 'limits.lorelines.current': 1 } },
+				(err, user) => {
+					console.log(user.limits)
+					if (!err && user != null) res.status(status.OK).send(loreline.id)
+					else res.status(status.NOT_FOUND).send('user not found')
+				}
+			)
 		} else res.status(status.CONFLICT).send(err.message)
 	})
 })
@@ -219,14 +224,17 @@ router.delete('/:userid/lorelines/:lorelineid', (req, res) => {
 		req.params.userid,
 		{
 			$pull: { lorelines: req.params.lorelineid },
+			$inc: { 'limits.lorelines.current': -1 },
 		},
 		(err, user) => {
-			if (!err && user != null)
-				Loreline.findByIdAndDelete(req.params.lorelineid, (err, loreline) => {
-					if (!err && loreline != null) res.sendStatus(status.OK)
-					else res.status(status.NOT_FOUND).send('loreline not found')
+			if (!err && user != null) {
+				Loreline.findOne({ _id: req.params.lorelineid }, (err, loreline) => {
+					if (!err && loreline != null) {
+						loreline.remove()
+						res.sendStatus(status.OK)
+					} else res.status(status.NOT_FOUND).send('loreline not found')
 				})
-			else res.status(status.NOT_FOUND).send('user not found')
+			} else res.status(status.NOT_FOUND).send('user not found')
 		}
 	)
 })
