@@ -148,18 +148,15 @@ router.post('/:userid/lorelines', (req, res) => {
 		modified: Date.now(),
 		timelineData: [],
 		customEntities: [],
+		ownerId: req.params.userid,
 	})
 
 	loreline.save((err) => {
 		if (!err) {
-			User.findByIdAndUpdate(
-				req.params.userid,
-				{ $push: { lorelines: loreline.id }, $inc: { 'limits.lorelines.current': 1 } },
-				(err, user) => {
-					if (!err && user != null) res.status(status.OK).send(loreline.id)
-					else res.status(status.NOT_FOUND).send('user not found')
-				}
-			)
+			User.findByIdAndUpdate(req.params.userid, { $push: { lorelines: loreline.id } }, (err, user) => {
+				if (!err && user != null) res.status(status.OK).send(loreline.id)
+				else res.status(status.NOT_FOUND).send('user not found')
+			})
 		} else res.status(status.CONFLICT).send(err.message)
 	})
 })
@@ -222,7 +219,6 @@ router.delete('/:userid/lorelines/:lorelineid', (req, res) => {
 		req.params.userid,
 		{
 			$pull: { lorelines: req.params.lorelineid },
-			$inc: { 'limits.lorelines.current': -1 },
 		},
 		(err, user) => {
 			if (!err && user != null)
