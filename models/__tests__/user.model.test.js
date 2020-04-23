@@ -22,13 +22,13 @@ describe("user model test", () => {
 describe("save user", () => {
   it("saves a user", async () => {
     const user = new userModel({
-      name: "testUser0",
-      email: "testUser0@email.com",
-      password: "testUser0password",
+      name: "user0",
+      email: "user0@email.com",
+      password: "user0password",
       created: new Date(0),
     });
     const savedUser = await user.save();
-    const expected = "testUser0";
+    const expected = "user0";
     const actual = savedUser.name;
     expect(actual).toEqual(expected);
   });
@@ -37,15 +37,15 @@ describe("save user", () => {
 describe("get user", () => {
   it("gets a user", async () => {
     const user = new userModel({
-      name: "testUser1",
-      email: "testUser1@email.com",
-      password: "testUser1password",
+      name: "user1",
+      email: "user1@email.com",
+      password: "user1password",
       created: new Date(0),
     });
     await user.save();
 
-    const foundUser = await userModel.findOne({ name: "testUser1" });
-    const expected = "testUser1";
+    const foundUser = await userModel.findOne({ name: "user1" });
+    const expected = "user1";
     const actual = foundUser.name;
     expect(actual).toEqual(expected);
   });
@@ -54,17 +54,17 @@ describe("get user", () => {
 describe("update a user", () => {
   it("updates a user", async () => {
     const user = new userModel({
-      name: "testUser2",
-      email: "testUser2@email.com",
-      password: "testUser2password",
+      name: "user2",
+      email: "user2@email.com",
+      password: "user2password",
       created: new Date(0),
     });
     await user.save();
 
-    user.name = "testUser2edit";
+    user.name = "user2edit";
     const updatedUser = await user.save();
 
-    const expected = "testUser2edit";
+    const expected = "user2edit";
     const actual = updatedUser.name;
     expect(actual).toEqual(expected);
   });
