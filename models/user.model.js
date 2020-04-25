@@ -19,8 +19,10 @@ var UserSchema = new mongoose.Schema({
 			message: (email) => `${email.value} is an invalid email`,
 		},
 	},
-	password: { type: String, required: [true, 'user password is required'] },
-	lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }],
+  password: { type: String, required: [true, 'user password is required'] },
+  securityQuestion: { type: String, required: [true, 'user security question is required']},
+  securityPassword: { type: String, required: [true, 'user security question is required']},
+  lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }],
 	created: {
 		type: Date,
 		required: [true, 'user creation (date) is required'],

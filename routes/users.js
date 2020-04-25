@@ -75,6 +75,8 @@ router.post('/', (req, res) => {
 				name: req.body.name,
 				email: req.body.email,
 				password: hash,
+				securityQuestion: req.body.securityQuestion,
+				securityPasswrod: hash,
 				created: Date.now(),
 			})
 
