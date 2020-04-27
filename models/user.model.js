@@ -21,7 +21,7 @@ var UserSchema = new mongoose.Schema({
 	},
   password: { type: String, required: [true, 'user password is required'] },
   securityQuestion: { type: String, required: [true, 'user security question is required']},
-  securityPassword: { type: String, required: [true, 'user security question is required']},
+  securityPassword: { type: String, required: [true, 'user security answer is required']},
   lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }],
 	created: {
 		type: Date,

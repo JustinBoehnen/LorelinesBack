@@ -76,7 +76,7 @@ router.post('/', (req, res) => {
 				email: req.body.email,
 				password: hash,
 				securityQuestion: req.body.securityQuestion,
-				securityPasswrod: hash,
+				securityPassword: hash,
 				created: Date.now(),
 			})
 
@@ -191,6 +191,40 @@ router.get('/:userid/lorelines/:lorelineid', (req, res) => {
 			if (!err && loreline != null) res.status(status.OK).send(loreline)
 			else res.status(status.NOT_FOUND).send('loreline not found')
 		})
+})
+
+/**
+ *  Purpose: Fetched the security question from a user
+ *  Full path: /api/users/:userid/securityQuestion
+ *  req: :user id
+ *  res: returns the security question
+ */
+router.get('/:userid/securityQuestion', (req, res) => {
+	User.findById(req.params.userid , (err, user) => {
+		if(!err && user != null){
+			res.status(status.OK).send(user.securityQuestion)
+		}
+		else res.status(status.NOT_FOUND).send('user not found')
+
+
+	})
+})
+
+/**
+ *  Purpose: Fetched the user:id off of a users email, later used to retrieve the security question
+ *  Full path: /api/users/:useremail/
+ *  req: :userid, which is the needed email, didnt know either other way to do this
+ *  res: reutrns the userID
+ */
+router.get('/:email/getuser' , (req, res) => { 
+	User.find( {email: req.params.email})
+	.select('_id')
+	.exec((err, user) => {
+	    if(!err && user != null){
+			res.status(status.OK).send(user)
+		}
+		else res.status(status.NOT_FOUND).send('user with this email not found')
+	})
 })
 
 /**
