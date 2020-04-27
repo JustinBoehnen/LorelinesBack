@@ -20,34 +20,31 @@ const User = require('../models/user.model')
  * res: status
  */
 router.post('/:lorelineid/entities', (req, res) => {
-	var customEntity = new CustomEntity({
-		name: req.body.name,
-		color: req.body.color,
-		content: req.body.content,
-		instances: [],
-		ownerId: 0,
-	})
-
 	Loreline.findById(req.params.lorelineid, (err, loreline) => {
-		if (!err && loreline != null) customEntity.ownerId = loreline.ownerId
-		else res.status(status.NOT_FOUND).send('ownerId not be found')
-	})
+		if (!err && loreline != null) {
+			var customEntity = new CustomEntity({
+				name: req.body.name,
+				color: req.body.color,
+				content: req.body.content,
+				instances: [],
+				ownerId: loreline.ownerId,
+			})
 
-	customEntity.save((err) => {
-		if (!err) {
-			Loreline.findByIdAndUpdate(
-				req.params.lorelineid,
-				{ $push: { customEntities: customEntity.id } },
-				(err, loreline) => {
-					if (!err && loreline != null) {
-						//User.updateOne({ _id: loreline.ownerId }, { $inc: { 'limits.entities.current': 1 } })
-						res.status(status.OK).send(customEntity.id)
-					} else res.status(status.NOT_FOUND).send('loreline not found')
-				}
-			)
-		} else {
-			res.status(status.CONFLICT).send(err.message)
-		}
+			customEntity.save((err) => {
+				if (!err) {
+					Loreline.findByIdAndUpdate(
+						req.params.lorelineid,
+						{ $push: { customEntities: customEntity.id } },
+						(err, loreline) => {
+							if (!err && loreline != null) {
+								//User.updateOne({ _id: loreline.ownerId }, { $inc: { 'limits.entities.current': 1 } })
+								res.status(status.OK).send(customEntity.id)
+							} else res.status(status.NOT_FOUND).send('loreline not found')
+						}
+					)
+				} else res.status(status.CONFLICT).send(err.message)
+			})
+		} else res.status(status.NOT_FOUND).send('ownerId not found')
 	})
 })
 
