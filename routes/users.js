@@ -212,8 +212,8 @@ router.get('/:userid/securityQuestion', (req, res) => {
 
 /**
  *  Purpose: Fetched the user:id off of a users email, later used to retrieve the security question
- *  Full path: /api/users/:useremail/
- *  req: :userid, which is the needed email, didnt know either other way to do this
+ *  Full path: /api/users/:email/
+ *  req: :email, which is the email for the person trying to recover a password
  *  res: reutrns the userID
  */
 router.get('/:email/getuser' , (req, res) => { 
