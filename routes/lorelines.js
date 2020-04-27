@@ -25,6 +25,7 @@ router.post('/:lorelineid/entities', (req, res) => {
 		color: req.body.color,
 		content: req.body.content,
 		instances: [],
+		ownerId: 0,
 	})
 
 	Loreline.findById(req.params.lorelineid, (err, loreline) => {
