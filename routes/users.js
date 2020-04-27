@@ -244,7 +244,7 @@ router.post("/:userid/changePassword", (req, res) => {
         User.findByIdAndUpdate(
           req.params.userid,
           { password: hash },
-          (Error, user) => {
+          (error, user) => {
             if (!error && user !== null) {
               res.sendStatus(status.OK).send("password is changed");
             } else {
