@@ -230,20 +230,48 @@ router.get("/:email/getuser", (req, res) => {
 });
 
 /**
+ * Purpose: changes a users password
+ * Fullpath : /api/users/:userid/changePassword
+ * req: :id to access a email
+ * res: success of fail
+ **/
+router.post("/:userid/changePassword", (req, res) => {
+  if (req.body.password === null) {
+    res.status(status.NO_CONTENT).send("new password cant be nothing");
+  } else {
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+      if (!err) {
+        User.findByIdAndUpdate(
+          req.params.userid,
+          { password: hash },
+          (Error, user) => {
+            if (!error && user !== null) {
+              res.sendStatus(status.OK).send("password is changed");
+            } else {
+              res.status(status.NOT_FOUND).send("user not found");
+            }
+          }
+        );
+      } else {
+		  res.status(status.CONFLICT).send("failed to hash password")
+      }
+    });
+  }
+});
+/**
  * purpose: verifys the users security question is correct
  * Full path: /api/users/:userid/recover
  * req: :userid which will be pulled from on an earlier gui
- * res: sucess or fail
+ * res: success or fail
  */
 router.post("/:userid/recover", (req, res) => {
   User.findById(req.params.userid, (err, user) => {
     if (!err && user !== null) {
-      console.log(req.body.securityPassword);
       bcrypt.compare(
         req.body.securityPassword,
         user.securityPassword,
         (err, result) => {
-          if (result) res.status(status.OK).send("securitys match");
+          if (result) res.status(status.OK).send("securitys answers match");
           else
             res.status(status.UNAUTHORIZED).send("Security answers dont match");
         }
