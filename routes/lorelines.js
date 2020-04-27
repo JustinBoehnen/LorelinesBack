@@ -123,13 +123,14 @@ router.delete('/:lorelineid/entities/:ceid', (req, res) => {
  * res: status
  */
 router.post('/:lorelineid/entities/:ceid/instances', (req, res) => {
-	var entityInstance = new EntityInstance({
-		name: req.body.name,
-		content: req.body.content,
-	})
-
 	Loreline.findById(req.params.lorelineid, (err, loreline) => {
 		if (!err && loreline != null) {
+			var entityInstance = new EntityInstance({
+				name: req.body.name,
+				content: req.body.content,
+				ownerId: loreline.ownerId,
+			})
+
 			entityInstance.save((err) => {
 				if (!err) {
 					CustomEntity.findByIdAndUpdate(
