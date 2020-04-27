@@ -29,6 +29,7 @@ router.post('/:lorelineid/entities', (req, res) => {
 
 	Loreline.findById(req.params.lorelineid, (err, loreline) => {
 		if (!err && loreline != null) customEntity.ownerId = loreline.ownerId
+		else res.status(status.NOT_FOUND).send('ownerId not be found')
 	})
 
 	customEntity.save((err) => {
