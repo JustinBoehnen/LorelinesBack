@@ -38,7 +38,7 @@ router.post('/:lorelineid/entities', (req, res) => {
 				{ $push: { customEntities: customEntity.id } },
 				(err, loreline) => {
 					if (!err && loreline != null) {
-						User.updateOne({ _id: loreline.ownerId }, { $inc: { 'limits.entities.current': 1 } })
+						//User.updateOne({ _id: loreline.ownerId }, { $inc: { 'limits.entities.current': 1 } })
 						res.status(status.OK).send(customEntity.id)
 					} else res.status(status.NOT_FOUND).send('loreline not found')
 				}
