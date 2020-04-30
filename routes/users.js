@@ -69,9 +69,9 @@ function checkFileType(file, cb) {
  * res: token
  */
 router.post("/", (req, res) => {
-  bcrypt.hash(req.body.password, 10, (err, hash1) => {
+  bcrypt.hash(req.body.password, 10, (error, hash1) => {
     bcrypt.hash(req.body.securityPassword, 10, (err, hash2) => {
-      if (!err) {
+      if (!err && !error) {
         var user = new User({
           name: req.body.name,
           email: req.body.email,
@@ -89,7 +89,7 @@ router.post("/", (req, res) => {
           }
         });
       } else {
-        res.status(status.CONFLICT).send(["failed to hash password"]);
+        res.status(status.CONFLICT).send(["failed to hash password or sequrity question"]);
       }
     });
   });
@@ -214,7 +214,7 @@ router.get("/:userid/securityQuestion", (req, res) => {
 
 /**
  *  Purpose: Fetched the user:id off of a users email, later used to retrieve the security question
- *  Full path: /api/users/:email/
+ *  Full path: /api/users/:email/getuser
  *  req: :email, which is the email for the person trying to recover a password
  *  res: reutrns the userID
  */
@@ -230,7 +230,7 @@ router.get("/:email/getuser", (req, res) => {
 });
 
 /**
- * Purpose: changes a users password
+ * Purpose: changes a users passwordrs
  * Fullpath : /api/users/:userid/changePassword
  * req: :id to access a email
  * res: success of fail
