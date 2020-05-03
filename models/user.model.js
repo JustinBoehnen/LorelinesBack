@@ -1,48 +1,55 @@
 /** @format */
 
-const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
-const Loreline = require('./loreline.model')
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const Loreline = require("./loreline.model");
 
-mongoose.set('useCreateIndex', true)
+mongoose.set("useCreateIndex", true);
 
 var UserSchema = new mongoose.Schema({
-  name: { type: String, required: [true, 'user name is required'] },
+  name: { type: String, required: [true, "user name is required"] },
   email: {
     type: String,
-    required: [true, 'user email is required'],
+    required: [true, "user email is required"],
     unique: true,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         return /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(
           v
-        )
+        );
       },
-      message: email => `${email.value} is an invalid email`
-    }
+      message: (email) => `${email.value} is an invalid email`,
+    },
   },
-  password: { type: String, required: [true, 'user password is required'] },
-  lorelines: [{ type: mongoose.Types.ObjectId, ref: 'Loreline' }],
+  password: { type: String, required: [true, "user password is required"] },
+  lorelines: [{ type: mongoose.Types.ObjectId, ref: "Loreline" }],
   created: {
     type: Date,
-    required: [true, 'user creation (date) is required']
-  }
-})
+    required: [true, "user creation (date) is required"],
+  },
+});
 
 // Removes Lorelines
-UserSchema.pre('remove', next => {
-  Loreline.remove({ _id: { $in: this.lorelines } })
-  next()
-})
+UserSchema.pre("remove", (next) => {
+  Loreline.remove({ _id: { $in: this.lorelines } });
+  next();
+});
 
-UserSchema.statics.generateJwt = user => {
-  return jwt.sign(
-    { id: user._id, name: user.name, email: user.email, created: user.created },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_EXP
-    }
-  )
-}
+UserSchema.statics.generateJwt = (user) => {
+  if (process.env.NODE_ENV !== "test") {
+    return jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        created: user.created,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXP,
+      }
+    );
+  }
+};
 
-module.exports = mongoose.model('User', UserSchema)
+module.exports = mongoose.model("User", UserSchema);
