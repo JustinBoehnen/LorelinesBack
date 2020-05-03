@@ -205,3 +205,58 @@ describe("delete loreline route tests", () => {
     expect(response.status).toBe(404);
   });
 });
+////////////////////////////////////////////////////////////////////////////////////////////////////
+describe("get lorelines route tests", () => {
+  it("get with one loreline", async () => {
+    const user = new userModel({
+      name: "user",
+      email: "user@email.com",
+      password: "userpassword",
+      created: new Date(0),
+    });
+    const tempUser = await user.save();
+    await request.post(`/api/users/${tempUser._id}/lorelines`).send({
+      name: "testLoreline1",
+    });
+    const response = await request.get(`/api/users/${tempUser._id}/lorelines`);
+    expect(response.status).toBe(200);
+  });
+
+  it("get with multiple lorelines", async () => {
+    const user = new userModel({
+      name: "user",
+      email: "user@email.com",
+      password: "userpassword",
+      created: new Date(0),
+    });
+    const tempUser = await user.save();
+    await request.post(`/api/users/${tempUser._id}/lorelines`).send({
+      name: "testLoreline1",
+    });
+    await request.post(`/api/users/${tempUser._id}/lorelines`).send({
+      name: "testLoreline2",
+    });
+    await request.post(`/api/users/${tempUser._id}/lorelines`).send({
+      name: "testLoreline3",
+    });
+    const response = await request.get(`/api/users/${tempUser._id}/lorelines`);
+    expect(response.status).toBe(200);
+  });
+
+  it("get with no lorelines", async () => {
+    const user = new userModel({
+      name: "user",
+      email: "user@email.com",
+      password: "userpassword",
+      created: new Date(0),
+    });
+    const tempUser = await user.save();
+    const response = await request.get(`/api/users/${tempUser._id}/lorelines`);
+    expect(response.status).toBe(200);
+  });
+
+  it("get with invalid user", async () => {
+    const response = await request.get(`/api/users/0/lorelines`);
+    expect(response.status).toBe(404);
+  });
+});
