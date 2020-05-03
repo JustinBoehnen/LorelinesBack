@@ -237,7 +237,7 @@ router.get("/:email/getuser", (req, res) => {
  **/
 router.post("/:userid/changePassword", (req, res) => {
   if (req.body.password === null) {
-    res.status(status.NO_CONTENT).send("new password cant be nothing");
+    res.status(status.NO_CONTENT).send("The new password cant be empty");
   } else {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (!err) {
@@ -271,9 +271,9 @@ router.post("/:userid/recover", (req, res) => {
         req.body.securityPassword,
         user.securityPassword,
         (err, result) => {
-          if (result) res.status(status.OK).send("securitys answers match");
+          if (result) res.status(status.OK).send("Security answers match");
           else
-            res.status(status.UNAUTHORIZED).send("Security answers dont match");
+            res.status(status.UNAUTHORIZED).send("Security answers don\'t match");
         }
       );
     } else {
