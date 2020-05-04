@@ -98,17 +98,219 @@ describe("create custom entity route tests", () => {
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 describe("get directory route tests", () => {
-  it("get with one ", async () => {
+  it("get with one custom entity", async () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
     });
     const tempLoreline = await loreline.save();
+    await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/directory`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get with multiple custom entities", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
+      name: "customEntity2",
+      color: "#000000",
+    });
+    await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
+      name: "customEntity3",
+      color: "#000000",
+    });
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/directory`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get with no custom entities", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/directory`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get with invalid user", async () => {
+    const response = await request.get(`/api/lorelines/0/directory`);
+    expect(response.status).toBe(404);
+  });
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+describe("get specific custom entity route tests", () => {
+  it("get with one custom entity", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEnt1 = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEnt1 = await customEnt1.save();
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEnt1._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get with multiple custom entities", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEnt1 = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEnt1 = await customEnt1.save();
+    await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
+      name: "customEntity2",
+      color: "#000000",
+    });
+    await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
+      name: "customEntity3",
+      color: "#000000",
+    });
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEnt1._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get with invalid custom entity id", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/entities/0`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("get from invalid user", async () => {
+    const customEnt1 = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEnt1 = await customEnt1.save();
+    const response = await request.get(
+      `/api/lorelines/0/entities/${tempCustomEnt1._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+describe("delete specific custom entity route tests", () => {
+  it("delete with one custom entity", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEnt1 = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEnt1 = await customEnt1.save();
+    const response = await request.delete(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEnt1._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("delete with multiple custom entities", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEnt1 = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEnt1 = await customEnt1.save();
+    await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
+      name: "customEntity2",
+      color: "#000000",
+    });
+    await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
+      name: "customEntity3",
+      color: "#000000",
+    });
+    const response = await request.delete(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEnt1._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("delete with invalid custom entity id", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const response = await request.delete(
+      `/api/lorelines/${tempLoreline._id}/entities/0`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("delete from invalid user", async () => {
+    const customEnt1 = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEnt1 = await customEnt1.save();
+    const response = await request.delete(
+      `/api/lorelines/0/entities/${tempCustomEnt1._id}`
+    );
+    expect(response.status).toBe(404);
+  });
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+describe("create instance route tests", () => {
+  it("simple instance creation", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
     const response = await request
-      .post(`/api/lorelines/${tempLoreline._id}/entities`)
+      .post(
+        `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}`
+      )
       .send({
-        name: "customEntity1",
-        color: "#000000",
+        name: "entityInstance",
+        type: "TEXT_FIELD",
       });
     expect(response.status).toBe(200);
   });
