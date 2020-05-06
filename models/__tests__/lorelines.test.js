@@ -437,7 +437,7 @@ describe("create instance route tests", () => {
 });
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 describe("get specific instance route tests", () => {
-  it("simple get instance", async () => {
+  it("get instance with one instance", async () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
@@ -457,5 +457,275 @@ describe("get specific instance route tests", () => {
       `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/${tempEntityInstance._id}`
     );
     expect(response.status).toBe(200);
+  });
+
+  it("get instance with multiple instances", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    await request.post(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/`
+    );
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get instance with invalid instance", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/0`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("get instance with invalid custom entity", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/entities/0/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get instance with invalid loreline", async () => {
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    const response = await request.get(
+      `/api/lorelines/0/entities/${tempCustomEntity._id}/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get instance with invalid custom entity and instance", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/entities/0/instances/0`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("get instance with invalid loreline and instance", async () => {
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const response = await request.get(
+      `/api/lorelines/0/entities/${tempCustomEntity._id}/instances/0`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("get instance with invalid loreline and custom entity", async () => {
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    const response = await request.get(
+      `/api/lorelines/0/entities/0/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("get instance with invalid loreline, entity, and instance", async () => {
+    const response = await request.get(
+      `/api/lorelines/0/entities/0/instances/0`
+    );
+    expect(response.status).toBe(404);
+  });
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+describe("delete specific instance route tests", () => {
+  it("delete instance with one instance", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    const response = await request.delete(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("delete instance with multiple instances", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    await request.post(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/`
+    );
+    const response = await request.delete(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("delete instance with invalid instance", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const response = await request.delete(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/0`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("delete instance with invalid custom entity", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    const response = await request.delete(
+      `/api/lorelines/${tempLoreline._id}/entities/0/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("delete instance with invalid loreline", async () => {
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    const response = await request.delete(
+      `/api/lorelines/0/entities/${tempCustomEntity._id}/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(200);
+  });
+
+  it("delete instance with invalid custom entity and instance", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const response = await request.delete(
+      `/api/lorelines/${tempLoreline._id}/entities/0/instances/0`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("delete instance with invalid loreline and instance", async () => {
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const response = await request.delete(
+      `/api/lorelines/0/entities/${tempCustomEntity._id}/instances/0`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("delete instance with invalid loreline and custom entity", async () => {
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    const response = await request.delete(
+      `/api/lorelines/0/entities/0/instances/${tempEntityInstance._id}`
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("delete instance with invalid loreline, entity, and instance", async () => {
+    const response = await request.delete(
+      `/api/lorelines/0/entities/0/instances/0`
+    );
+    expect(response.status).toBe(404);
   });
 });
