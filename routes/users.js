@@ -89,7 +89,9 @@ router.post("/", (req, res) => {
           }
         });
       } else {
-        res.status(status.CONFLICT).send(["failed to hash password or sequrity question"]);
+        res
+          .status(status.CONFLICT)
+          .send(["failed to hash password or sequrity question"]);
       }
     });
   });
@@ -253,7 +255,7 @@ router.post("/:userid/changePassword", (req, res) => {
           }
         );
       } else {
-		  res.status(status.CONFLICT).send("failed to hash password")
+        res.status(status.CONFLICT).send("failed to hash password");
       }
     });
   }
@@ -273,7 +275,9 @@ router.post("/:userid/recover", (req, res) => {
         (err, result) => {
           if (result) res.status(status.OK).send("Security answers match");
           else
-            res.status(status.UNAUTHORIZED).send("Security answers don\'t match");
+            res
+              .status(status.UNAUTHORIZED)
+              .send("Security answers don't match");
         }
       );
     } else {
