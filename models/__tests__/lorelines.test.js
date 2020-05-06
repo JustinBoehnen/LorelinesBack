@@ -306,12 +306,156 @@ describe("create instance route tests", () => {
     const tempCustomEntity = await customEntity.save();
     const response = await request
       .post(
-        `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}`
+        `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances`
       )
       .send({
         name: "entityInstance",
         type: "TEXT_FIELD",
       });
+    expect(response.status).toBe(200);
+  });
+
+  it("multiple instance creation", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    await request
+      .post(
+        `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances`
+      )
+      .send({
+        name: "entityInstanc1",
+        type: "TEXT_FIELD",
+      });
+    await request
+      .post(
+        `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances`
+      )
+      .send({
+        name: "entityInstance2",
+        type: "TEXT_FIELD",
+      });
+    const response = await request
+      .post(
+        `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances`
+      )
+      .send({
+        name: "entityInstance3",
+        type: "TEXT_FIELD",
+      });
+    expect(response.status).toBe(200);
+  });
+
+  it("instance creation with invalid loreline", async () => {
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const response = await request
+      .post(`/api/lorelines/0/entities/${tempCustomEntity._id}/instances`)
+      .send({
+        name: "entityInstance",
+        type: "TEXT_FIELD",
+      });
+    expect(response.status).toBe(200);
+  });
+
+  it("instance creation with invalid custom entity", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const response = await request
+      .post(`/api/lorelines/${tempLoreline._id}/entities/0/instances`)
+      .send({
+        name: "entityInstance",
+        type: "TEXT_FIELD",
+      });
+    expect(response.status).toBe(404);
+  });
+
+  it("instance creation invalid custom entity and loreline", async () => {
+    const response = await request
+      .post(`/api/lorelines/0/entities/0/instances`)
+      .send({
+        name: "entityInstance",
+        type: "TEXT_FIELD",
+      });
+    expect(response.status).toBe(404);
+  });
+
+  it("instance creation without name", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const response = await request
+      .post(
+        `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances`
+      )
+      .send({
+        type: "TEXT_FIELD",
+      });
+    expect(response.status).toBe(409);
+  });
+
+  it("instance creation without type", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const response = await request
+      .post(
+        `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances`
+      )
+      .send({
+        name: "entityInstance",
+      });
+    expect(response.status).toBe(409);
+  });
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+describe("get specific instance route tests", () => {
+  it("simple get instance", async () => {
+    const loreline = new lorelineModel({
+      name: "loreline",
+      modified: new Date(0),
+    });
+    const tempLoreline = await loreline.save();
+    const customEntity = new customEntityModel({
+      name: "customEntity1",
+      color: "#000000",
+    });
+    const tempCustomEntity = await customEntity.save();
+    const entityInstance = new entityInstanceModel({
+      name: "entityInstance",
+      type: "TEXT_FIELD",
+    });
+    const tempEntityInstance = await entityInstance.save();
+    const response = await request.get(
+      `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/${tempEntityInstance._id}`
+    );
     expect(response.status).toBe(200);
   });
 });
