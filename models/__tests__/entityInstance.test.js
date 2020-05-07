@@ -24,6 +24,7 @@ describe("save entity instance", () => {
     const entityInstance = new entityInstanceModel({
       type: "TEXT_FIELD",
       name: "entityInstance0",
+      ownerId: "000000000000000000000000",
     });
     const savedentityInstance = await entityInstance.save();
     const expected = "entityInstance0";
@@ -37,6 +38,7 @@ describe("get entity instance", () => {
     const entityInstance = new entityInstanceModel({
       type: "TEXT_FIELD",
       name: "entityInstance1",
+      ownerId: "000000000000000000000000",
     });
     await entityInstance.save();
 
@@ -54,6 +56,7 @@ describe("update a entity instance", () => {
     const entityInstance = new entityInstanceModel({
       type: "TEXT_FIELD",
       name: "entityInstance2",
+      ownerId: "000000000000000000000000",
     });
     await entityInstance.save();
 

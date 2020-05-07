@@ -23,6 +23,8 @@ describe("create user route tests", () => {
       name: "testUser1",
       email: "testUser1@email.com",
       password: "testPassword1",
+      securityQuestion: "testQuestion1",
+      securityPassword: "testSPassword1",
     });
     expect(response.status).toBe(200);
   });
@@ -32,6 +34,8 @@ describe("create user route tests", () => {
       name: "testUser2",
       email: "testUser2email.com",
       password: "testPassword2",
+      securityQuestion: "testQuestion2",
+      securityPassword: "testSPassword2",
     });
     expect(response.status).toBe(409);
   });
@@ -41,6 +45,8 @@ describe("create user route tests", () => {
       name: "",
       email: "testUser3@email.com",
       password: "testPassword3",
+      securityQuestion: "testQuestion3",
+      securityPassword: "testSPassword3",
     });
     expect(response.status).toBe(409);
   });
@@ -50,6 +56,8 @@ describe("create user route tests", () => {
       name: "testUser4",
       email: "",
       password: "testPassword4",
+      securityQuestion: "testQuestion4",
+      securityPassword: "testSPassword4",
     });
     expect(response.status).toBe(409);
   });
@@ -59,6 +67,8 @@ describe("create user route tests", () => {
       name: "testUser5",
       email: "testUser5@email.com",
       password: "",
+      securityQuestion: "testQuestion5",
+      securityPassword: "testSPassword5",
     });
     expect(response.status).toBe(409);
   });
@@ -68,11 +78,15 @@ describe("create user route tests", () => {
       name: "testUser6",
       email: "testUser6@email.com",
       password: "testPassword6",
+      securityQuestion: "testQuestion6",
+      securityPassword: "testSPassword6",
     });
     const response = await request.post("/api/users/").send({
       name: "testUser6",
       email: "testUser6@email.com",
       password: "testPassword6",
+      securityQuestion: "testQuestion6",
+      securityPassword: "testSPassword6",
     });
     expect(response.status).toBe(200);
   });
@@ -85,6 +99,8 @@ describe("create loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     const response = await request
@@ -101,6 +117,8 @@ describe("create loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     const response = await request
@@ -117,6 +135,8 @@ describe("create loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     await request.post(`/api/users/${tempUser._id}/lorelines`).send({
@@ -134,7 +154,7 @@ describe("create loreline route tests", () => {
     const response = await request.post(`/api/users/0/lorelines`).send({
       name: "testLoreline4",
     });
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(409);
   });
 
   it("loreline with invalid image", async () => {
@@ -143,6 +163,8 @@ describe("create loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     const response = await request
@@ -162,11 +184,14 @@ describe("delete loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request.delete(
@@ -181,6 +206,8 @@ describe("delete loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     const response = await request.delete(
@@ -193,6 +220,7 @@ describe("delete loreline route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request.delete(
@@ -213,6 +241,8 @@ describe("get lorelines route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     await request.post(`/api/users/${tempUser._id}/lorelines`).send({
@@ -228,6 +258,8 @@ describe("get lorelines route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     await request.post(`/api/users/${tempUser._id}/lorelines`).send({
@@ -249,6 +281,8 @@ describe("get lorelines route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     const response = await request.get(`/api/users/${tempUser._id}/lorelines`);
@@ -268,11 +302,14 @@ describe("get specific loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     response = await request.get(
@@ -287,11 +324,14 @@ describe("get specific loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     await request.post(`/api/users/${tempUser._id}/lorelines`).send({
@@ -315,6 +355,8 @@ describe("get specific loreline route tests", () => {
       email: "user@email.com",
       password: "userpassword",
       created: new Date(0),
+      securityQuestion: "testQuestion",
+      securityPassword: "testSPassword",
     });
     const tempUser = await user.save();
     response = await request.get(`/api/users/${tempUser._id}/lorelines/0`);
@@ -325,6 +367,7 @@ describe("get specific loreline route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     response = await request.get(`/api/users/0/lorelines/${tempLoreline._id}`);

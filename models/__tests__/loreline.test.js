@@ -24,6 +24,7 @@ describe("save loreline", () => {
     const loreline = new lorelineModel({
       name: "loreline0",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const savedloreline = await loreline.save();
     const expected = "loreline0";
@@ -37,6 +38,7 @@ describe("get loreline", () => {
     const loreline = new lorelineModel({
       name: "loreline1",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     await loreline.save();
 
@@ -54,6 +56,7 @@ describe("update a loreline", () => {
     const loreline = new lorelineModel({
       name: "loreline2",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     await loreline.save();
 

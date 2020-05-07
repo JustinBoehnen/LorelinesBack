@@ -58,13 +58,22 @@ UserSchema.pre("remove", (next) => {
 });
 
 UserSchema.statics.generateJwt = (user) => {
-  return jwt.sign(
-    { id: user._id, name: user.name, email: user.email, created: user.created },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_EXP,
-    }
-  );
+  if (process.env.NODE_ENV !== "test") {
+    return jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        created: user.created,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXP,
+      }
+    );
+  } else {
+    return;
+  }
 };
 
 module.exports = mongoose.model("User", UserSchema);

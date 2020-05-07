@@ -1,5 +1,4 @@
 const dbHandler = require("../../db-handler");
-const userModel = require("../user.model");
 const lorelineModel = require("../loreline.model");
 const customEntityModel = require("../customEntity.model");
 const entityInstanceModel = require("../entityInstance.model");
@@ -24,6 +23,7 @@ describe("create custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request
@@ -31,6 +31,7 @@ describe("create custom entity route tests", () => {
       .send({
         name: "customEntity1",
         color: "#000000",
+        ownerId: "000000000000000000000000",
       });
     expect(response.status).toBe(200);
   });
@@ -39,21 +40,25 @@ describe("create custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity2",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const response = await request
       .post(`/api/lorelines/${tempLoreline._id}/entities`)
       .send({
         name: "customEntity3",
         color: "#000000",
+        ownerId: "000000000000000000000000",
       });
     expect(response.status).toBe(200);
   });
@@ -62,6 +67,7 @@ describe("create custom entity route tests", () => {
     const response = await request.post(`/api/lorelines/0/entities`).send({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     expect(response.status).toBe(404);
   });
@@ -70,6 +76,7 @@ describe("create custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request
@@ -77,6 +84,7 @@ describe("create custom entity route tests", () => {
       .send({
         name: "",
         color: "#000000",
+        ownerId: "000000000000000000000000",
       });
     expect(response.status).toBe(409);
   });
@@ -85,6 +93,7 @@ describe("create custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request
@@ -92,6 +101,7 @@ describe("create custom entity route tests", () => {
       .send({
         name: "customEntity1",
         color: "",
+        ownerId: "000000000000000000000000",
       });
     expect(response.status).toBe(409);
   });
@@ -102,11 +112,13 @@ describe("get directory route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const response = await request.get(
       `/api/lorelines/${tempLoreline._id}/directory`
@@ -118,19 +130,23 @@ describe("get directory route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity2",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity3",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const response = await request.get(
       `/api/lorelines/${tempLoreline._id}/directory`
@@ -142,6 +158,7 @@ describe("get directory route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request.get(
@@ -161,11 +178,13 @@ describe("get specific custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEnt1 = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEnt1 = await customEnt1.save();
     const response = await request.get(
@@ -178,20 +197,24 @@ describe("get specific custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEnt1 = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEnt1 = await customEnt1.save();
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity2",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity3",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const response = await request.get(
       `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEnt1._id}`
@@ -203,6 +226,7 @@ describe("get specific custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request.get(
@@ -215,6 +239,7 @@ describe("get specific custom entity route tests", () => {
     const customEnt1 = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEnt1 = await customEnt1.save();
     const response = await request.get(
@@ -229,11 +254,13 @@ describe("delete specific custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEnt1 = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEnt1 = await customEnt1.save();
     const response = await request.delete(
@@ -246,20 +273,24 @@ describe("delete specific custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEnt1 = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEnt1 = await customEnt1.save();
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity2",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     await request.post(`/api/lorelines/${tempLoreline._id}/entities`).send({
       name: "customEntity3",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const response = await request.delete(
       `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEnt1._id}`
@@ -271,6 +302,7 @@ describe("delete specific custom entity route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request.delete(
@@ -283,6 +315,7 @@ describe("delete specific custom entity route tests", () => {
     const customEnt1 = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEnt1 = await customEnt1.save();
     const response = await request.delete(
@@ -297,11 +330,13 @@ describe("create instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const response = await request
@@ -319,11 +354,13 @@ describe("create instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     await request
@@ -357,6 +394,7 @@ describe("create instance route tests", () => {
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const response = await request
@@ -364,6 +402,7 @@ describe("create instance route tests", () => {
       .send({
         name: "entityInstance",
         type: "TEXT_FIELD",
+        ownerId: "000000000000000000000000",
       });
     expect(response.status).toBe(200);
   });
@@ -372,6 +411,7 @@ describe("create instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request
@@ -389,6 +429,7 @@ describe("create instance route tests", () => {
       .send({
         name: "entityInstance",
         type: "TEXT_FIELD",
+        ownerId: "000000000000000000000000",
       });
     expect(response.status).toBe(404);
   });
@@ -397,11 +438,13 @@ describe("create instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const response = await request
@@ -418,11 +461,13 @@ describe("create instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const response = await request
@@ -441,16 +486,19 @@ describe("get specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     const response = await request.get(
@@ -463,16 +511,19 @@ describe("get specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     await request.post(
@@ -488,16 +539,19 @@ describe("get specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const response = await request.get(
       `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/0`
@@ -509,11 +563,13 @@ describe("get specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     const response = await request.get(
@@ -526,11 +582,13 @@ describe("get specific instance route tests", () => {
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     const response = await request.get(
@@ -543,6 +601,7 @@ describe("get specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request.get(
@@ -555,6 +614,7 @@ describe("get specific instance route tests", () => {
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const response = await request.get(
@@ -567,6 +627,7 @@ describe("get specific instance route tests", () => {
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     const response = await request.get(
@@ -588,16 +649,19 @@ describe("delete specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     const response = await request.delete(
@@ -610,16 +674,19 @@ describe("delete specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     await request.post(
@@ -635,16 +702,19 @@ describe("delete specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const response = await request.delete(
       `/api/lorelines/${tempLoreline._id}/entities/${tempCustomEntity._id}/instances/0`
@@ -656,11 +726,13 @@ describe("delete specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     const response = await request.delete(
@@ -673,11 +745,13 @@ describe("delete specific instance route tests", () => {
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     const response = await request.delete(
@@ -690,6 +764,7 @@ describe("delete specific instance route tests", () => {
     const loreline = new lorelineModel({
       name: "loreline",
       modified: new Date(0),
+      ownerId: "000000000000000000000000",
     });
     const tempLoreline = await loreline.save();
     const response = await request.delete(
@@ -702,6 +777,7 @@ describe("delete specific instance route tests", () => {
     const customEntity = new customEntityModel({
       name: "customEntity1",
       color: "#000000",
+      ownerId: "000000000000000000000000",
     });
     const tempCustomEntity = await customEntity.save();
     const response = await request.delete(
@@ -714,6 +790,7 @@ describe("delete specific instance route tests", () => {
     const entityInstance = new entityInstanceModel({
       name: "entityInstance",
       type: "TEXT_FIELD",
+      ownerId: "000000000000000000000000",
     });
     const tempEntityInstance = await entityInstance.save();
     const response = await request.delete(

@@ -26,6 +26,8 @@ describe("save user", () => {
       email: "user0@email.com",
       password: "user0password",
       created: new Date(0),
+      securityQuestion: "testQuestion0",
+      securityPassword: "testSPassword0",
     });
     const savedUser = await user.save();
     const expected = "user0";
@@ -41,6 +43,8 @@ describe("get user", () => {
       email: "user1@email.com",
       password: "user1password",
       created: new Date(0),
+      securityQuestion: "testQuestion1",
+      securityPassword: "testSPassword1",
     });
     await user.save();
 
@@ -58,6 +62,8 @@ describe("update a user", () => {
       email: "user2@email.com",
       password: "user2password",
       created: new Date(0),
+      securityQuestion: "testQuestion2",
+      securityPassword: "testSPassword2",
     });
     await user.save();
 

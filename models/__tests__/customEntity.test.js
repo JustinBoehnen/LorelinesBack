@@ -30,6 +30,7 @@ describe("save custom entity", () => {
           name: "fieldType",
         },
       ],
+      ownerId: "000000000000000000000000",
     });
     const savedCustomEntity = await customEntity.save();
     const expected = "customEntity0";
@@ -49,6 +50,7 @@ describe("get custom entity", () => {
           name: "fieldType",
         },
       ],
+      ownerId: "000000000000000000000000",
     });
     await customEntity.save();
 
@@ -72,6 +74,7 @@ describe("update a custom entity", () => {
           name: "fieldType",
         },
       ],
+      ownerId: "000000000000000000000000",
     });
     await customEntity.save();
 
