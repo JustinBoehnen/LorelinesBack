@@ -276,7 +276,7 @@ router.post("/:userid/recover", (req, res) => {
           if (result) res.status(status.OK).send("Security answers match");
           else
             res
-              .status(status.UNAUTHORIZED)
+              .status(status.OK)
               .send("Security answers don't match");
         }
       );
@@ -345,7 +345,7 @@ router.post("/token", (req, res) => {
     if (!err && user !== null) {
       bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (result) res.status(status.OK).send(User.generateJwt(user));
-        else res.status(status.OK).send("password does not match");
+        else res.status(status.UNAUTHORIZED).send("password does not match");
       });
     } else {
       res.status(status.NOT_FOUND).send("user not found");
