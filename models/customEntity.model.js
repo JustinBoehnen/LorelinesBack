@@ -53,11 +53,12 @@ var CustomEntitySchema = new mongoose.Schema({
 	},
 	instances: [{ type: mongoose.Types.ObjectId, ref: 'EntityInstance' }],
 	ownerId: { type: mongoose.Types.ObjectId, ref: 'User', required: [true, 'owner id is required'] },
+	instanceCount: { type: Number, default: 0 },
 })
 
 // Removes Instances
-CustomEntitySchema.pre('remove', (next) => {
-	User.updateOne({ _id: this.ownerId }, { $inc: { 'limits.entities.count': -1 } })
+CustomEntitySchema.pre('remove', { document: true }, (next) => {
+	User.updateOne({ _id: this.ownerId }, { $inc: { 'limits.entities.current': -1 } }) // remove one entity
 	EntityInstance.remove({ _id: { $in: this.instances } })
 	next()
 })
