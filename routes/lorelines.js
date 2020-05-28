@@ -6,6 +6,8 @@ const status = require("http-status-codes");
 const Loreline = require("../models/loreline.model");
 const CustomEntity = require("../models/customEntity.model");
 const EntityInstance = require("../models/entityInstance.model");
+
+const TimelineNode = require("../models/timeLineNode.model") 
 const User = require("../models/user.model");
 
 // <<<<   api/lorelines   >>>>
@@ -199,6 +201,39 @@ router.delete("/:lorelineid/entities/:ceid/instances/:eiid", (req, res) => {
   );
 });
 
+/**
+ * Purpose: Adds a timeline node to a loreline
+ * Full PAth: /api/lorelines/:lorelineid/timeline
+ * Req: Node type,
+ *      position
+ * res: status
+ */
+router.post("/:lorelineid/timeline", (req, res) => {
+  Loreline.findById(req.params.lorelineid, (err, loreline) =>{
+    if(!err && loreline != null) {
+      var timelineNode = new TimelineNode({
+        type: req.body.type,
+        position: req.body.position,
+        content: req.body.content,
+        ownerId: loreline.ownerId,
+      });
+
+      timelineNode.save((err) => {
+        if(!err){
+          Loreline.findByIdAndUpdate(
+            req.params.lorelineid,
+            { $push: {timelineData: timelineNode.id } },
+            (err, loreline) => {
+              if(!err && loreline != null) {
+                res.status(status.OK).send(timelineNode.id)
+              }else { res.status(status.NOT_FOUND).send("loreline not found")}
+            }
+          )
+        }else {res.status(status.CONFLICT).send(err.message)}
+      })
+    }else{res.status(status.NOT_FOUND).send("ownerID not found")}
+  })
+})
 // PLANNED ROUTES:
 
 // Add Timeline node POST
