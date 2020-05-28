@@ -19,10 +19,12 @@ var LorelineSchema = new mongoose.Schema({
 	timelineData: [],
 	customEntities: [{ type: mongoose.Types.ObjectId, ref: 'CustomEntity' }],
 	ownerId: { type: mongoose.Types.ObjectId, ref: 'User', required: [true, 'owner id is required'] },
+	entityCount: { type: Number, default: 0 },
 })
 
 // Removes Custom Entities
 LorelineSchema.pre('remove', { document: true }, function (next) {
+	User.updateOne({ _id: this.ownerId }, { $inc: { 'limits.lorelines.current': -1 } })
 	CustomEntity.remove({ _id: { $in: this.customEntities } })
 	next()
 })
