@@ -250,7 +250,15 @@ router.post("/:lorelineid/timeline", (req, res) => {
  * Req: lorelineid and timelinenodeid
  * res: status
  */
-
+router.get('/:lorelineid/timeline/:timelineNodeid', (req, res) => {
+	TimelineNode.findById(req.params.timelineNodeid)
+		//.populate('instances')
+		.exec((err, node) => {
+			if (!err && node != null) {
+				res.status(status.OK).send(node)
+			} else res.status(status.NOT_FOUND).send('timelineNode not found')
+		})
+})
 // PLANNED ROUTES:
 
 
