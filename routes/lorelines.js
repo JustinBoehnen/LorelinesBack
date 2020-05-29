@@ -318,8 +318,24 @@ router.put('/:lorelineid/timeline/:timelineNodeid/editContent', (req, res) => {
 		}
 	)
 })
-// PLANNED ROUTES:
 
-// Modify Timeline node PUT
+/**
+ * Purpose: edits a timeline nodes position
+ * Full Path: /api/lorelines/:lorelineid/timeline/:timelineNodeId/editPos
+ * Req: lorelineid and timelinenodeid
+ * res: status
+ */
+router.put('/:lorelineid/timeline/:timelineNodeid/editPos', (req, res) => {
+	TimelineNode.findByIdAndUpdate({ _id: req.params.timelineNodeid},
+		 {position: req.body.position},
+		(err, node) => {
+			if(!err && node != null)
+			{
+				res.status(status.OK).send('position changed')
+			}
+			else{res.status(status.NOT_FOUND).send("Node not found")}
+		}
+	)
+})
 
 module.exports = router
