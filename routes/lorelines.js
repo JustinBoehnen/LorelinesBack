@@ -261,7 +261,7 @@ router.get('/:lorelineid/timeline/:timelineNodeid', (req, res) => {
 /**
  * Purpose: returns all nodes of a single timeline
  * Full Path: /api/lorelines/:lorelineid/timelineNodes
- * Req: lorelineid and timelinenodeid
+ * Req: lorelineid
  * res: status
  */
 router.get('/:lorelineid/timelineNodes', (req, res) => {
@@ -276,12 +276,33 @@ router.get('/:lorelineid/timelineNodes', (req, res) => {
 	})
 })
 
+/**
+ * Purpose: deletes a timeline node
+ * Full Path: /api/lorelines/:lorelineid/timeline/:timelineNodeId
+ * Req: lorelineid and timelinenodeid
+ * res: status
+ */
+router.delete('/:lorelineid/timeline/:timelineNodeid', (req, res) => {
+	Loreline.findByIdAndUpdate(
+		req.params.lorelineid,
+		{
+			$pull: {timelineData: req.params.timelineNodeid},
+		},
+		(err, loreline) => {
+			if(!err && loreline != null)
+			TimelineNode.findByIdAndDelete(req.params.timelineNodeid, (err, node) =>{
+				if(!err && node != null){
+					res.sendStatus(status.OK)
+				}else res.status(status.NOT_FOUND).sendStatus('timelineNode not found')
+			})
+			else res.status(status.NOT_FOUND).send('loreline not found')
+		}
+	)
+})
+
 // PLANNED ROUTES:
 
-
 // Modify Timeline node PUT
-
-// Remove Timeline node DELETE
 
 // Get all Timeline nodes GET
 
