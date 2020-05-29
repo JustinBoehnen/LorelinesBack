@@ -300,10 +300,26 @@ router.delete('/:lorelineid/timeline/:timelineNodeid', (req, res) => {
 	)
 })
 
+/**
+ * Purpose: edits a timeline nodes content
+ * Full Path: /api/lorelines/:lorelineid/timeline/:timelineNodeId/editContent
+ * Req: lorelineid and timelinenodeid
+ * res: status
+ */
+router.put('/:lorelineid/timeline/:timelineNodeid/editContent', (req, res) => {
+	TimelineNode.findByIdAndUpdate({ _id: req.params.timelineNodeid},
+		 {content: req.body.content},
+		(err, node) => {
+			if(!err && node != null)
+			{
+				res.status(status.OK).send('content changed')
+			}
+			else{res.status(status.NOT_FOUND).send("Node not found")}
+		}
+	)
+})
 // PLANNED ROUTES:
 
 // Modify Timeline node PUT
-
-// Get all Timeline nodes GET
 
 module.exports = router
