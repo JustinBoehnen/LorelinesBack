@@ -6,6 +6,7 @@ process.on('unhandledRejection', function (err) {
 
 const mongoose = require('mongoose')
 const CustomEntity = require('./customEntity.model')
+const TimelineNodes = require ('./timeLineNode.model')
 
 mongoose.set('useFindAndModify', false)
 
@@ -16,7 +17,7 @@ var LorelineSchema = new mongoose.Schema({
 		type: Date,
 		required: [true, 'loreline modified (date) is required'],
 	},
-	timelineData: [],
+	timelineData: [{type: mongoose.Types.ObjectId, ref: 'TimelineNode'}],
 	customEntities: [{ type: mongoose.Types.ObjectId, ref: 'CustomEntity' }],
 	ownerId: { type: mongoose.Types.ObjectId, ref: 'User', required: [true, 'owner id is required'] },
 	entityCount: { type: Number, default: 0 },

@@ -246,19 +246,41 @@ router.post("/:lorelineid/timeline", (req, res) => {
 
 /**
  * Purpose: returns data of a single timeline node
- * Full PAth: /api/lorelines/:lorelineid/timeline/:timelineNodeid
+ * Full Path: /api/lorelines/:lorelineid/timeline/:timelineNodeid
  * Req: lorelineid and timelinenodeid
  * res: status
  */
 router.get('/:lorelineid/timeline/:timelineNodeid', (req, res) => {
 	TimelineNode.findById(req.params.timelineNodeid)
-		//.populate('instances')
 		.exec((err, node) => {
 			if (!err && node != null) {
 				res.status(status.OK).send(node)
 			} else res.status(status.NOT_FOUND).send('timelineNode not found')
 		})
 })
+/**
+ * Purpose: returns all nodes of a single timeline
+ * Full Path: /api/lorelines/:lorelineid/timelineNodes
+ * Req: lorelineid and timelinenodeid
+ * res: status
+ */
+router.get('/:lorelineid/timelineNodes', (req, res) => {
+	Loreline.findById(req.params.lorelineid)
+	.populate({
+		path: 'timelineData',
+		//populate: {
+		//	path: 'instances',
+		//	model: 'EntityInstance',
+		//	select: '_id name',
+	// 	},
+		select: '_id content position type',
+	})
+	.exec((err, loreline) => {
+		if (!err && loreline != null) res.status(status.OK).send(loreline.timelineData)
+		else res.status(status.NOT_FOUND).send('loreline not found')
+	})
+})
+
 // PLANNED ROUTES:
 
 
