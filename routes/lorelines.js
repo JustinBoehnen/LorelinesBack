@@ -268,11 +268,6 @@ router.get('/:lorelineid/timelineNodes', (req, res) => {
 	Loreline.findById(req.params.lorelineid)
 	.populate({
 		path: 'timelineData',
-		//populate: {
-		//	path: 'instances',
-		//	model: 'EntityInstance',
-		//	select: '_id name',
-	// 	},
 		select: '_id content position type',
 	})
 	.exec((err, loreline) => {
