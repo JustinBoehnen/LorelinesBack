@@ -9,6 +9,7 @@ var FieldContent = new mongoose.Schema({
 		required: [true, 'field type is required'],
 		enum: [
 			'TEXT_FIELD',
+			'NUMBER_FIELD',
 			'LIST_FIELD',
 			'REFERENCE_FIELD',
 			'CHECKBOX_FIELD',
@@ -25,6 +26,7 @@ var FieldContent = new mongoose.Schema({
 })
 
 // TEXT_FIELD       : A BLOCK OF TEXT (EX: BIO, NAME)
+// NUMBER_FIELD		: A NUMBER (EX: AGE)
 // LIST_FIELD       : A LIST OF OTHER INSTANCES (EX: FRIENDS)
 // REFERENCE_FIELD  : A REFERENCE TO A SINGLE INSTANCE (EX: MOM)
 // CHECKBOX_FIELD   : A BOOLEAN CHECKBOX (EX: MARRIED)
