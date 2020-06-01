@@ -139,7 +139,6 @@ router.post('/:lorelineid/entities/:ceid/instances', (req, res) => {
 						var entityInstance = new EntityInstance({
 							name: req.body.name,
 							content: req.body.content,
-							value: req.body.value,
 							ownerId: loreline.ownerId,
 						})
 						entityInstance.save((err) => {
