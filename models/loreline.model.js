@@ -38,6 +38,7 @@ LorelineSchema.pre('remove', { document: true }, function(next) {
     { $inc: { 'limits.lorelines.current': -1 } }
   )
   CustomEntity.remove({ _id: { $in: this.customEntities } })
+  Timeline.remove({ _id: this.timelineId })
   next()
 })
 
