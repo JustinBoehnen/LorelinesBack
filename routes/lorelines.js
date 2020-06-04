@@ -7,6 +7,7 @@ const Loreline = require('../models/loreline.model')
 const CustomEntity = require('../models/customEntity.model')
 const EntityInstance = require('../models/entityInstance.model')
 const User = require('../models/user.model')
+const Timeline = require('../models/timeline.model')
 
 // <<<<   api/lorelines   >>>>
 
@@ -20,40 +21,41 @@ const User = require('../models/user.model')
  * res: status
  */
 router.post('/:lorelineid/entities', (req, res) => {
-	Loreline.findById(req.params.lorelineid, (err, loreline) => {
-		if (!err && loreline != null) {
-			User.findById(loreline.ownerId, (err, user) => {
-				if (!err && user != null) {
-					if (user.limits.entities.current < user.limits.entities.maximum) {
-						var customEntity = new CustomEntity({
-							name: req.body.name,
-							color: req.body.color,
-							content: req.body.content,
-							instances: [],
-							ownerId: loreline.ownerId,
-						})
-						customEntity.save((err) => {
-							if (!err) {
-								Loreline.findByIdAndUpdate(
-									req.params.lorelineid,
-									{ $push: { customEntities: customEntity.id } },
-									(err, loreline) => {
-										if (!err && loreline != null) {
-											User.updateOne(
-												{ _id: loreline.ownerId },
-												{ $inc: { 'limits.entities.current': 1 } }
-											)
-											res.status(status.OK).send(customEntity.id)
-										} else res.status(status.NOT_FOUND).send('loreline not found')
-									}
-								)
-							} else res.status(status.CONFLICT).send(err.message)
-						})
-					} else res.status(status.CONFLICT).send('entity limit reached')
-				} else res.status(status.NOT_FOUND).send('user not found')
-			})
-		}
-	})
+  Loreline.findById(req.params.lorelineid, (err, loreline) => {
+    if (!err && loreline != null) {
+      User.findById(loreline.ownerId, (err, user) => {
+        if (!err && user != null) {
+          if (user.limits.entities.current < user.limits.entities.maximum) {
+            var customEntity = new CustomEntity({
+              name: req.body.name,
+              color: req.body.color,
+              content: req.body.content,
+              instances: [],
+              ownerId: loreline.ownerId
+            })
+            customEntity.save(err => {
+              if (!err) {
+                Loreline.findByIdAndUpdate(
+                  req.params.lorelineid,
+                  { $push: { customEntities: customEntity.id } },
+                  (err, loreline) => {
+                    if (!err && loreline != null) {
+                      User.updateOne(
+                        { _id: loreline.ownerId },
+                        { $inc: { 'limits.entities.current': 1 } }
+                      )
+                      res.status(status.OK).send(customEntity.id)
+                    } else
+                      res.status(status.NOT_FOUND).send('loreline not found')
+                  }
+                )
+              } else res.status(status.CONFLICT).send(err.message)
+            })
+          } else res.status(status.CONFLICT).send('entity limit reached')
+        } else res.status(status.NOT_FOUND).send('user not found')
+      })
+    }
+  })
 })
 
 /**
@@ -63,20 +65,21 @@ router.post('/:lorelineid/entities', (req, res) => {
  * res: all customEntities and instances of a specific loreline
  */
 router.get('/:lorelineid/directory', (req, res) => {
-	Loreline.findById(req.params.lorelineid)
-		.populate({
-			path: 'customEntities',
-			populate: {
-				path: 'instances',
-				model: 'EntityInstance',
-				select: '_id name',
-			},
-			select: '_id name color instances',
-		})
-		.exec((err, loreline) => {
-			if (!err && loreline != null) res.status(status.OK).send(loreline.customEntities)
-			else res.status(status.NOT_FOUND).send('loreline not found')
-		})
+  Loreline.findById(req.params.lorelineid)
+    .populate({
+      path: 'customEntities',
+      populate: {
+        path: 'instances',
+        model: 'EntityInstance',
+        select: '_id name'
+      },
+      select: '_id name color instances'
+    })
+    .exec((err, loreline) => {
+      if (!err && loreline != null)
+        res.status(status.OK).send(loreline.customEntities)
+      else res.status(status.NOT_FOUND).send('loreline not found')
+    })
 })
 
 /**
@@ -87,13 +90,13 @@ router.get('/:lorelineid/directory', (req, res) => {
  * res: CustomEntity object with populated children
  */
 router.get('/:lorelineid/entities/:ceid', (req, res) => {
-	CustomEntity.findById(req.params.ceid)
-		.populate('instances')
-		.exec((err, entity) => {
-			if (!err && entity != null) {
-				res.status(status.OK).send(entity)
-			} else res.status(status.NOT_FOUND).send('custom entity not found')
-		})
+  CustomEntity.findById(req.params.ceid)
+    .populate('instances')
+    .exec((err, entity) => {
+      if (!err && entity != null) {
+        res.status(status.OK).send(entity)
+      } else res.status(status.NOT_FOUND).send('custom entity not found')
+    })
 })
 
 /**
@@ -104,21 +107,21 @@ router.get('/:lorelineid/entities/:ceid', (req, res) => {
  * res: status
  */
 router.delete('/:lorelineid/entities/:ceid', (req, res) => {
-	Loreline.findByIdAndUpdate(
-		req.params.lorelineid,
-		{
-			$pull: { customEntities: req.params.ceid },
-		},
-		(err, loreline) => {
-			if (!err && loreline != null)
-				CustomEntity.findByIdAndDelete(req.params.ceid, (err, entity) => {
-					if (!err && entity != null) {
-						res.sendStatus(status.OK)
-					} else res.status(status.NOT_FOUND).send('custom entity not found')
-				})
-			else res.status(status.NOT_FOUND).send('loreline not found')
-		}
-	)
+  Loreline.findByIdAndUpdate(
+    req.params.lorelineid,
+    {
+      $pull: { customEntities: req.params.ceid }
+    },
+    (err, loreline) => {
+      if (!err && loreline != null)
+        CustomEntity.findByIdAndDelete(req.params.ceid, (err, entity) => {
+          if (!err && entity != null) {
+            res.sendStatus(status.OK)
+          } else res.status(status.NOT_FOUND).send('custom entity not found')
+        })
+      else res.status(status.NOT_FOUND).send('loreline not found')
+    }
+  )
 })
 
 /**
@@ -131,41 +134,44 @@ router.delete('/:lorelineid/entities/:ceid', (req, res) => {
  * res: status
  */
 router.post('/:lorelineid/entities/:ceid/instances', (req, res) => {
-	Loreline.findById(req.params.lorelineid, (err, loreline) => {
-		if (!err && loreline != null) {
-			User.findById(loreline.ownerId, (err, user) => {
-				if (!err && user != null) {
-					if (user.limits.instances.current < user.limits.instances.maximum) {
-						var entityInstance = new EntityInstance({
-							name: req.body.name,
-							content: req.body.content,
-							ownerId: loreline.ownerId,
-						})
-						entityInstance.save((err) => {
-							if (!err) {
-								CustomEntity.findByIdAndUpdate(
-									req.params.ceid,
-									{
-										$push: { instances: entityInstance.id },
-										$set: { ownerId: loreline.ownerId },
-									},
-									(err, entity) => {
-										if (!err && entity != null) {
-											User.updateOne(
-												{ _id: entity.ownerId },
-												{ $inc: { 'limits.instances.current': 1 } }
-											)
-											res.status(status.OK).send(entityInstance.id)
-										} else res.status(status.NOT_FOUND).send('custom entity not found')
-									}
-								)
-							} else res.status(status.CONFLICT).send(err.message)
-						})
-					} else res.status(status.CONFLICT).send('instance limit reached')
-				} else res.status(status.NOT_FOUND).send('user not found')
-			})
-		}
-	})
+  Loreline.findById(req.params.lorelineid, (err, loreline) => {
+    if (!err && loreline != null) {
+      User.findById(loreline.ownerId, (err, user) => {
+        if (!err && user != null) {
+          if (user.limits.instances.current < user.limits.instances.maximum) {
+            var entityInstance = new EntityInstance({
+              name: req.body.name,
+              content: req.body.content,
+              ownerId: loreline.ownerId
+            })
+            entityInstance.save(err => {
+              if (!err) {
+                CustomEntity.findByIdAndUpdate(
+                  req.params.ceid,
+                  {
+                    $push: { instances: entityInstance.id },
+                    $set: { ownerId: loreline.ownerId }
+                  },
+                  (err, entity) => {
+                    if (!err && entity != null) {
+                      User.updateOne(
+                        { _id: entity.ownerId },
+                        { $inc: { 'limits.instances.current': 1 } }
+                      )
+                      res.status(status.OK).send(entityInstance.id)
+                    } else
+                      res
+                        .status(status.NOT_FOUND)
+                        .send('custom entity not found')
+                  }
+                )
+              } else res.status(status.CONFLICT).send(err.message)
+            })
+          } else res.status(status.CONFLICT).send('instance limit reached')
+        } else res.status(status.NOT_FOUND).send('user not found')
+      })
+    }
+  })
 })
 
 /**
@@ -177,11 +183,11 @@ router.post('/:lorelineid/entities/:ceid/instances', (req, res) => {
  * res: EntityInstance object
  */
 router.get('/:lorelineid/entities/:ceid/instances/:eiid', (req, res) => {
-	EntityInstance.findById(req.params.eiid, (err, instance) => {
-		if (!err && instance != null) {
-			res.status(status.OK).send(instance)
-		} else res.status(status.NOT_FOUND).send('entity instance not found')
-	})
+  EntityInstance.findById(req.params.eiid, (err, instance) => {
+    if (!err && instance != null) {
+      res.status(status.OK).send(instance)
+    } else res.status(status.NOT_FOUND).send('entity instance not found')
+  })
 })
 
 /**
@@ -193,21 +199,75 @@ router.get('/:lorelineid/entities/:ceid/instances/:eiid', (req, res) => {
  * res: status
  */
 router.delete('/:lorelineid/entities/:ceid/instances/:eiid', (req, res) => {
-	CustomEntity.findByIdAndUpdate(
-		req.params.ceid,
-		{
-			$pull: { instances: req.params.eiid },
-		},
-		(err, entity) => {
-			if (!err && entity != null)
-				EntityInstance.findByIdAndDelete(req.params.eiid, (err, instance) => {
-					if (!err && instance != null) {
-						res.sendStatus(status.OK)
-					} else res.status(status.NOT_FOUND).send('entity instance not found')
-				})
-			else res.status(status.NOT_FOUND).send('custom entity not found')
-		}
-	)
+  CustomEntity.findByIdAndUpdate(
+    req.params.ceid,
+    {
+      $pull: { instances: req.params.eiid }
+    },
+    (err, entity) => {
+      if (!err && entity != null)
+        EntityInstance.findByIdAndDelete(req.params.eiid, (err, instance) => {
+          if (!err && instance != null) {
+            res.sendStatus(status.OK)
+          } else res.status(status.NOT_FOUND).send('entity instance not found')
+        })
+      else res.status(status.NOT_FOUND).send('custom entity not found')
+    }
+  )
+})
+
+/**
+ * Purpose: Adds an event node to the timeline
+ * Full path: /api/lorelines/:lorelineid/timeline/events
+ * req: :lorelineid: ObjectId of loreline
+ * res: status
+ */
+router.post('/:lorelineid/timeline/events', (req, res) => {
+  var event = {
+    title: req.params.title,
+    subheader: req.params.subheader,
+    description: req.params.description
+  }
+
+  Loreline.findById(req.params.lorelineid, (err, loreline) => {
+    if (!err && loreline != null) {
+      Timeline.findByIdAndUpdate(
+        loreline.timelineId,
+        {
+          $push: { events: event }
+        },
+        (err, timeline) => {
+          if (!err && timeline != null) {
+            res.sendStatus(status.OK)
+          } else
+            res
+              .status(status.NOT_FOUND)
+              .send('timeline not found, loreline is not v0.8 compatible')
+        }
+      )
+    } else res.status(status.NOT_FOUND).send('loreline not found')
+  })
+})
+
+/**
+ * Purpose: Retreives the timeline
+ * Full path: /api/lorelines/:lorelineid/timeline
+ * req: :lorelineid: ObjectId of loreline
+ * res: timeline and status
+ */
+router.get('/:lorelineid/timeline', (req, res) => {
+  Loreline.findById(req.params.lorelineid, (err, loreline) => {
+    if (!err && loreline != null) {
+      Timeline.findById(loreline.timelineId, (err, timeline) => {
+        if (!err && timeline != null) {
+          res.status(status.OK).send(timeline)
+        } else
+          res
+            .status(status.NOT_FOUND)
+            .send('timeline not found, loreline is not v0.8 compatible')
+      })
+    } else res.status(status.NOT_FOUND).send('loreline not found')
+  })
 })
 
 /**
@@ -217,7 +277,7 @@ router.delete('/:lorelineid/entities/:ceid/instances/:eiid', (req, res) => {
  *      position
  * res: status
  */
-router.post('/:lorelineid/timeline', (req, res) => {
+/*router.post('/:lorelineid/timeline', (req, res) => {
 	Loreline.findById(req.params.lorelineid, (err, loreline) => {
 		if (!err && loreline != null) {
 			var timelineNode = new TimelineNode({
@@ -248,7 +308,7 @@ router.post('/:lorelineid/timeline', (req, res) => {
 			res.status(status.NOT_FOUND).send('ownerID not found')
 		}
 	})
-})
+})*/
 // PLANNED ROUTES:
 
 // Add Timeline node POST
