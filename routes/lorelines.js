@@ -224,9 +224,9 @@ router.delete('/:lorelineid/entities/:ceid/instances/:eiid', (req, res) => {
  */
 router.post('/:lorelineid/timeline/events', (req, res) => {
   var event = {
-    title: req.params.title,
-    subheader: req.params.subheader,
-    description: req.params.description
+    title: req.body.title,
+    subheader: req.body.subheader,
+    description: req.body.description
   }
 
   Loreline.findById(req.params.lorelineid, (err, loreline) => {
