@@ -9,5 +9,5 @@ Lorelines is a web app wherin users can organize every minute detail of the proj
 - Timeline creation with entity referencing and entity time-states (entities have their history tracked)
 - User profiles with cloud data persistence (develop your story anywhere)
 - and more!
-- 
+
 This back-end was implemented with Express.js.
